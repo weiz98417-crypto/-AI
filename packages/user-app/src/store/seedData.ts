@@ -80,7 +80,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 767,
     priceRange: 'mid',
     styleTags: ['简约通勤', '优雅知性'],
-    coverImage: '/assets/outfits/work-commute-1-main.svg',
+    coverImage: '/assets/outfits/work-commute-1-main.jpg',
     brandSummary: 'ANGEL CHEN + ZARA + Charles & Keith',
   },
   {
@@ -91,7 +91,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 1147,
     priceRange: 'premium',
     styleTags: ['简约通勤', '职业精英'],
-    coverImage: '/assets/outfits/work-commute-2-main.svg',
+    coverImage: '/assets/outfits/work-commute-2-main.jpg',
     brandSummary: 'MASSIMO DUTTI + UNIQLO + COS',
   },
   {
@@ -102,7 +102,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 808,
     priceRange: 'mid',
     styleTags: ['简约通勤', '温柔甜美'],
-    coverImage: '/assets/outfits/work-commute-3-main.svg',
+    coverImage: '/assets/outfits/work-commute-3-main.jpg',
     brandSummary: '& Other Stories + Sam Edelman',
   },
   {
@@ -113,7 +113,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 677,
     priceRange: 'mid',
     styleTags: ['简约通勤', '休闲舒适'],
-    coverImage: '/assets/outfits/work-commute-4-main.svg',
+    coverImage: '/assets/outfits/work-commute-4-main.jpg',
     brandSummary: 'Everlane + JNBY + UNIQLO',
   },
   {
@@ -124,7 +124,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 2897,
     priceRange: 'luxury',
     styleTags: ['职业精英', '优雅知性'],
-    coverImage: '/assets/outfits/client-meeting-1-main.svg',
+    coverImage: '/assets/outfits/client-meeting-1-main.jpg',
     brandSummary: 'Theory + Equipment + Stuart Weitzman',
   },
   {
@@ -135,7 +135,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 1827,
     priceRange: 'luxury',
     styleTags: ['优雅知性', '简约通勤'],
-    coverImage: '/assets/outfits/client-meeting-2-main.svg',
+    coverImage: '/assets/outfits/client-meeting-2-main.jpg',
     brandSummary: 'Vince + Mango + Polène',
   },
   {
@@ -146,7 +146,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 2047,
     priceRange: 'premium',
     styleTags: ['简约通勤', '职业精英'],
-    coverImage: '/assets/outfits/client-meeting-3-main.svg',
+    coverImage: '/assets/outfits/client-meeting-3-main.jpg',
     brandSummary: 'COS + Maje + Tod\'s',
   },
   {
@@ -157,7 +157,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 1627,
     priceRange: 'premium',
     styleTags: ['温柔甜美', '潮流街头'],
-    coverImage: '/assets/outfits/weekend-date-1-main.svg',
+    coverImage: '/assets/outfits/weekend-date-1-main.jpg',
     brandSummary: 'Réalisation Par + Cult Gaia + By Far',
   },
   {
@@ -168,7 +168,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 1277,
     priceRange: 'premium',
     styleTags: ['温柔甜美', '优雅知性'],
-    coverImage: '/assets/outfits/weekend-date-2-main.svg',
+    coverImage: '/assets/outfits/weekend-date-2-main.jpg',
     brandSummary: 'Sézane + ZARA + Carel',
   },
   {
@@ -179,7 +179,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 848,
     priceRange: 'mid',
     styleTags: ['潮流街头', '温柔甜美'],
-    coverImage: '/assets/outfits/weekend-date-3-main.svg',
+    coverImage: '/assets/outfits/weekend-date-3-main.jpg',
     brandSummary: 'For Love & Lemons + Levi\'s',
   },
   {
@@ -190,7 +190,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 2198,
     priceRange: 'luxury',
     styleTags: ['潮流街头', '温柔甜美'],
-    coverImage: '/assets/outfits/girls-gathering-1-main.svg',
+    coverImage: '/assets/outfits/girls-gathering-1-main.jpg',
     brandSummary: 'The Attico + Jacquemus',
   },
   {
@@ -201,7 +201,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 1677,
     priceRange: 'premium',
     styleTags: ['潮流街头', '休闲舒适'],
-    coverImage: '/assets/outfits/girls-gathering-2-main.svg',
+    coverImage: '/assets/outfits/girls-gathering-2-main.jpg',
     brandSummary: 'Acne Studios + Stüssy + Dickies',
   },
   {
@@ -212,7 +212,7 @@ export const seedOutfits: Outfit[] = [
     totalPrice: 1298,
     priceRange: 'premium',
     styleTags: ['温柔甜美', '潮流街头'],
-    coverImage: '/assets/outfits/girls-gathering-3-main.svg',
+    coverImage: '/assets/outfits/girls-gathering-3-main.jpg',
     brandSummary: 'Ganni + Dr. Martens',
   },
 ]

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAdmin } from '../store/AdminContext'
 import { PRICE_RANGE_MAP } from '../shared/types'
+import type { ManagedOutfit } from '../shared/types'
 
 const OCCASION_COLORS: Record<string, string> = {
   'work-commute': 'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant',
@@ -26,7 +27,26 @@ const CTR_VALUES: Record<string, number> = {
 export default function OutfitsPage() {
   const { state, dispatch } = useAdmin()
   const [page, setPage] = useState(1)
+  const [showForm, setShowForm] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [newOccasion, setNewOccasion] = useState('work-commute')
+  const [newPrice, setNewPrice] = useState('')
   const perPage = 10
+
+  const handleAdd = () => {
+    if (!newName.trim()) return
+    const id = `new-${Date.now()}`
+    const price = parseInt(newPrice) || 888
+    const outfit: ManagedOutfit = {
+      id, occasion: newOccasion as ManagedOutfit['occasion'],
+      name: newName, items: [], totalPrice: price,
+      priceRange: price > 1000 ? 'premium' as const : price > 500 ? 'mid' as const : 'budget' as const,
+      styleTags: ['简约通勤'], coverImage: '/assets/outfits/work-commute-1-main.jpg',
+      brandSummary: '自定义品牌', active: true,
+    }
+    dispatch({ type: 'ADD_OUTFIT', outfit })
+    setNewName(''); setNewPrice(''); setShowForm(false); setPage(1)
+  }
 
   if (state.loading) {
     return (
@@ -57,11 +77,49 @@ export default function OutfitsPage() {
           <button className="px-4 py-2 flex items-center gap-2 bg-surface border border-outline-variant/40 rounded-lg text-secondary hover:border-primary transition-all text-xs font-semibold">
             筛选
           </button>
-          <button className="px-4 py-2 flex items-center gap-2 bg-primary text-white rounded-lg hover:opacity-90 transition-all text-xs font-semibold shadow-sm">
-            ＋ 新增穿搭
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="px-4 py-2 flex items-center gap-2 bg-primary text-white rounded-lg hover:opacity-90 transition-all text-xs font-semibold shadow-sm"
+          >
+            {showForm ? '取消' : '＋ 新增穿搭'}
           </button>
         </div>
       </div>
+
+      {/* Add Form */}
+      {showForm && (
+        <div className="bg-surface rounded-2xl border border-primary/30 p-6 shadow-sm">
+          <h3 className="text-sm font-bold mb-4 text-primary">新增穿搭方案</h3>
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <div>
+              <label className="block text-xs text-secondary mb-1 font-semibold">穿搭名称</label>
+              <input value={newName} onChange={e => setNewName(e.target.value)}
+                className="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none"
+                placeholder="如：春季通勤套装" />
+            </div>
+            <div>
+              <label className="block text-xs text-secondary mb-1 font-semibold">场合</label>
+              <select value={newOccasion} onChange={e => setNewOccasion(e.target.value)}
+                className="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none">
+                <option value="work-commute">上班通勤</option>
+                <option value="client-meeting">客户会议</option>
+                <option value="weekend-date">周末约会</option>
+                <option value="girls-gathering">闺蜜聚会</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs text-secondary mb-1 font-semibold">价格 (¥)</label>
+              <input value={newPrice} onChange={e => setNewPrice(e.target.value)}
+                className="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none"
+                placeholder="如：1280" type="number" />
+            </div>
+          </div>
+          <button onClick={handleAdd}
+            className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
+            确认添加
+          </button>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

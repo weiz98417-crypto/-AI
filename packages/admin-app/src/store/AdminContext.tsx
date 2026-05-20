@@ -31,6 +31,7 @@ export type AdminAction =
   | { type: 'INIT_DATA'; metrics: DashboardMetrics; analytics: AdminState['analytics']; outfits: ManagedOutfit[] }
   | { type: 'SET_LOADING'; loading: boolean }
   | { type: 'TOGGLE_OUTFIT'; outfitId: string }
+  | { type: 'ADD_OUTFIT'; outfit: ManagedOutfit }
 
 // ---- Reducer ----
 function adminReducer(state: AdminState, action: AdminAction): AdminState {
@@ -56,6 +57,11 @@ function adminReducer(state: AdminState, action: AdminAction): AdminState {
       const outfits = state.managedOutfits.map((o) =>
         o.id === action.outfitId ? { ...o, active: !o.active } : o,
       )
+      localStorage.setItem('ggai-admin-outfits', JSON.stringify(outfits))
+      return { ...state, managedOutfits: outfits }
+    }
+    case 'ADD_OUTFIT': {
+      const outfits = [action.outfit, ...state.managedOutfits]
       localStorage.setItem('ggai-admin-outfits', JSON.stringify(outfits))
       return { ...state, managedOutfits: outfits }
     }

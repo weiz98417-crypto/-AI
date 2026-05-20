@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { PRICE_RANGE_MAP } from '@ggai/shared/types'
 import type { Outfit } from '@ggai/shared/types'
 import { useApp } from '../store/AppContext'
+import { generateAiOutfitDescription, calculateAiScore } from '../store/aiEngine'
 
 export default function RecommendPage() {
   const { occasion } = useParams<{ occasion: string }>()
@@ -22,10 +23,29 @@ export default function RecommendPage() {
     return list
   }, [state.outfits, occasion, priceFilter])
 
+  const [aiGenerating, setAiGenerating] = useState(false)
+  const [aiGeneratedId, setAiGeneratedId] = useState<string | null>(null)
+
   const handleOutfitClick = (outfit: Outfit) => {
     setExpandedId(expandedId === outfit.id ? null : outfit.id)
     dispatch({ type: 'ADD_HISTORY', entry: { outfitId: outfit.id, viewedAt: Date.now() } })
   }
+
+  const handleAiGenerate = useCallback(() => {
+    setAiGenerating(true)
+    setAiGeneratedId(null)
+    setTimeout(() => {
+      // Pick the best-scoring outfit for current occasion
+      const scored = filteredOutfits
+        .map((o) => ({ o, score: calculateAiScore(o, state.preferences) }))
+        .sort((a, b) => b.score - a.score)
+      if (scored.length > 0) {
+        setAiGeneratedId(scored[0].o.id)
+        setExpandedId(scored[0].o.id)
+      }
+      setAiGenerating(false)
+    }, 2000)
+  }, [filteredOutfits, state.preferences])
 
   return (
     <div className="min-h-screen bg-background pb-32">
@@ -72,8 +92,36 @@ export default function RecommendPage() {
           </div>
         </div>
 
+        {/* AI Generate Button */}
+        <div className="mt-4 mb-4">
+          <button
+            onClick={handleAiGenerate}
+            disabled={aiGenerating}
+            className={`w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
+              aiGenerating
+                ? 'bg-primary/20 text-primary animate-pulse'
+                : 'bg-gradient-to-r from-primary to-primary-light text-white shadow-md active:scale-[0.98]'
+            }`}
+          >
+            <span className="text-lg">{aiGenerating ? '🔄' : '🤖'}</span>
+            {aiGenerating ? 'AI is analyzing your preferences...' : 'AI Generate Best Pick'}
+          </button>
+        </div>
+
+        {aiGeneratedId && (
+          <div className="bg-primary-fixed/30 border border-primary/20 rounded-xl p-3 mb-4 text-sm">
+            <span className="text-primary font-semibold">🤖 AI Pick: </span>
+            <span className="text-on-surface">
+              {state.outfits.find((o) => o.id === aiGeneratedId)?.name}
+            </span>
+            <span className="text-primary font-bold ml-1">
+              {calculateAiScore(state.outfits.find((o) => o.id === aiGeneratedId)!, state.preferences)}% match
+            </span>
+          </div>
+        )}
+
         {/* Outfit Cards */}
-        <div className="mt-4 flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
           {filteredOutfits.length === 0 ? (
             <div className="text-center py-20">
               <span className="text-5xl">👗</span>
@@ -101,12 +149,26 @@ export default function RecommendPage() {
 
                   {/* Info */}
                   <div className="p-4">
-                    <div className="flex justify-between items-start mb-3">
+                    <div className="flex justify-between items-start mb-2">
                       <div>
                         <h3 className="text-lg font-bold text-on-surface">{outfit.name}</h3>
                         <p className="text-[13px] text-secondary">{outfit.brandSummary}</p>
                       </div>
                       <p className="text-lg font-bold text-primary">¥{outfit.totalPrice}</p>
+                    </div>
+
+                    {/* AI Score */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs">🤖</span>
+                      <div className="flex-1 h-1 bg-surface-container rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-primary rounded-full"
+                          style={{ width: `${calculateAiScore(outfit, state.preferences)}%` }}
+                        />
+                      </div>
+                      <span className="text-[10px] font-semibold text-on-surface-variant">
+                        {calculateAiScore(outfit, state.preferences)}%
+                      </span>
                     </div>
 
                     {/* Action buttons */}

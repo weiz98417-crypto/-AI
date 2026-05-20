@@ -1,11 +1,38 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../store/AppContext'
 import { outfitImages } from '../assets/images'
+import { aiRecommend, getAiThinkingPhrases } from '../store/aiEngine'
 import SearchBar from '../components/SearchBar'
 
 export default function HomePage() {
   const navigate = useNavigate()
   const { state } = useApp()
+  const [aiThinking, setAiThinking] = useState(true)
+  const [thinkStep, setThinkStep] = useState(0)
+  const [aiPicks, setAiPicks] = useState<ReturnType<typeof aiRecommend>>([])
+
+  const phrases = getAiThinkingPhrases()
+
+  useEffect(() => {
+    if (!state.loading) {
+      // Simulate AI thinking steps
+      const timer = setInterval(() => {
+        setThinkStep((s) => {
+          if (s >= phrases.length) {
+            clearInterval(timer)
+            // Generate AI picks
+            const picks = aiRecommend(state.outfits, 'work-commute', state.preferences, 3)
+            setAiPicks(picks)
+            setAiThinking(false)
+            return s
+          }
+          return s + 1
+        })
+      }, 600)
+      return () => clearInterval(timer)
+    }
+  }, [state.loading, state.outfits, state.preferences])
 
   return (
     <>
@@ -17,7 +44,7 @@ export default function HomePage() {
       {/* Occasion Quick Pick */}
       <section className="mb-5">
         <div className="px-3 flex justify-between items-end mb-2">
-          <h2 className="text-xl font-bold text-on-surface">Occasion Quick Pick</h2>
+          <h2 className="text-[20px] font-bold text-on-surface">Occasion Quick Pick</h2>
           <span className="text-xs font-semibold text-primary">View All</span>
         </div>
         <div className="flex overflow-x-auto hide-scrollbar gap-3 px-3">
@@ -38,35 +65,66 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Today's Picks */}
+      {/* AI Curated Picks */}
       <section className="px-3">
-        <h2 className="text-xl font-bold text-on-surface mb-4">Today's Picks</h2>
-        <div className="space-y-4">
-          {state.outfits.slice(0, 5).map((outfit) => (
-            <div key={outfit.id}
-              className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden shadow-sm flex active:opacity-80 cursor-pointer"
-              onClick={() => navigate(`/recommend/${outfit.occasion}`)}
-            >
-              <div className="w-[33%] aspect-[3/4]">
-                <img src={outfit.coverImage} alt={outfit.name} className="w-full h-full object-cover" />
-              </div>
-              <div className="flex-1 p-4 flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-start mb-1">
-                    <h3 className="text-xs font-semibold text-on-surface">{outfit.name}</h3>
-                  </div>
-                  <p className="text-[13px] text-on-surface-variant mb-2">{outfit.brandSummary}</p>
-                  <div className="flex gap-2">
-                    {outfit.styleTags.slice(0, 2).map((tag) => (
-                      <span key={tag} className="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-                <div className="text-sm font-bold text-primary mt-2">¥{outfit.totalPrice}</div>
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-[20px] font-bold text-on-surface">AI Curated For You</h2>
+          <span className="text-sm">🤖</span>
+        </div>
+
+        {aiThinking ? (
+          <div className="bg-surface-container-lowest rounded-2xl border border-primary/20 p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center animate-pulse text-lg">🤖</div>
+              <div>
+                <p className="text-sm font-semibold text-primary">AI Engine Running</p>
+                <p className="text-xs text-on-surface-variant">{phrases[thinkStep] || 'Generating...'}</p>
               </div>
             </div>
-          ))}
-        </div>
+            <div className="space-y-2">
+              {phrases.slice(0, thinkStep + 1).map((p, i) => (
+                <div key={i} className="flex items-center gap-2 text-xs text-on-surface-variant">
+                  <span className="text-primary">✓</span>
+                  <span className={i === thinkStep ? 'animate-pulse font-semibold text-on-surface' : ''}>{p}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {aiPicks.map(({ outfit, score }) => {
+              const barColor = score >= 90 ? 'bg-green-500' : score >= 80 ? 'bg-primary' : 'bg-yellow-500'
+              return (
+                <div key={outfit.id}
+                  className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden shadow-sm flex active:opacity-80 cursor-pointer"
+                  onClick={() => navigate(`/recommend/${outfit.occasion}`)}
+                >
+                  <div className="w-[33%] aspect-[3/4]">
+                    <img src={outfit.coverImage} alt={outfit.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1 p-4 flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-start mb-1">
+                        <h3 className="text-xs font-semibold text-on-surface">{outfit.name}</h3>
+                        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">AI</span>
+                      </div>
+                      <p className="text-[13px] text-on-surface-variant mb-2">{outfit.brandSummary}</p>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+                          <div className={`h-full ${barColor} rounded-full transition-all`} style={{ width: `${score}%` }} />
+                        </div>
+                        <span className="text-[11px] font-bold text-on-surface-variant">{score}%</span>
+                      </div>
+                      <p className="text-sm font-bold text-primary">¥{outfit.totalPrice}</p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </section>
     </>
   )

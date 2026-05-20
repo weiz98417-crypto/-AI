@@ -1,6 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
-  <rect width="400" height="400" rx="20" fill="#e6e1e1"/>
-  <text x="200" y="200" font-family="Arial, sans-serif" font-size="80" text-anchor="middle" dominant-baseline="central">👖</text>
-  <rect x="20" y="320" width="360" height="60" rx="12" fill="#484647" opacity="0.12"/>
-  <text x="200" y="358" font-family="Plus Jakarta Sans, sans-serif" font-size="22" font-weight="600" fill="#484647" text-anchor="middle">下装</text>
+  <defs>
+    <linearGradient id="bg31" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFD9E4"/><stop offset="100%" stop-color="#C9809A" stop-opacity="0.7"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" rx="16" fill="url(#bg31)"/>
+  <text x="200" y="190" font-family="Arial, sans-serif" font-size="72" text-anchor="middle">👜</text>
+  <rect x="30" y="310" width="340" height="54" rx="12" fill="#ffffff" opacity="0.85"/>
+  <text x="200" y="343" font-family="Plus Jakarta Sans, sans-serif" font-size="20" font-weight="600" fill="#C9809A" text-anchor="middle">下装</text>
 </svg>

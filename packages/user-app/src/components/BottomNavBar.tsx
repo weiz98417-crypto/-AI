@@ -1,9 +1,9 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 
 const TABS = [
-  { path: '/', label: 'Home', icon: '🏠' },
-  { path: '/favorites', label: 'Favorites', icon: '❤️' },
-  { path: '/preferences', label: 'Profile', icon: '👤' },
+  { path: '/', label: '首页', icon: '🏠' },
+  { path: '/favorites', label: '收藏', icon: '❤️' },
+  { path: '/preferences', label: '偏好', icon: '👤' },
 ]
 
 export default function BottomNavBar() {

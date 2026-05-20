@@ -23,19 +23,19 @@ export default function FavoritesPage() {
           className={`flex-1 py-2 rounded-full text-xs font-semibold transition-all ${
             tab === 'favorites' ? 'bg-primary-container text-on-primary-container shadow-sm' : 'text-secondary'
           }`}
-        >Favorites</button>
+        >我的收藏</button>
         <button
           onClick={() => setTab('history')}
           className={`flex-1 py-2 rounded-full text-xs font-semibold transition-all ${
             tab === 'history' ? 'bg-primary-container text-on-primary-container shadow-sm' : 'text-secondary'
           }`}
-        >History</button>
+        >浏览历史</button>
       </div>
 
       {/* Stats */}
       <div className="px-3 mb-4">
-        <p className="text-xs text-secondary">{tab === 'favorites' ? 'Saved Items' : 'Recently Viewed'}</p>
-        <p className="text-lg font-bold text-on-surface">{items.length} {tab === 'favorites' ? 'curated outfits' : 'items viewed'}</p>
+        <p className="text-xs text-secondary">{tab === 'favorites' ? '已收藏' : '最近浏览'}</p>
+        <p className="text-lg font-bold text-on-surface">共 {items.length} {tab === 'favorites' ? '套穿搭' : '条记录'}</p>
       </div>
 
       {/* Content */}

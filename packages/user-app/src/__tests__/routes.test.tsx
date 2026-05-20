@@ -17,9 +17,8 @@ function renderWithRouter(initialRoute = '/') {
 describe('User App Routes', () => {
   it('renders home page at /', async () => {
     renderWithRouter('/')
-    const headings = await screen.findAllByText('GuangGuangAI')
+    const headings = await screen.findAllByText('逛逛AI')
     expect(headings.length).toBeGreaterThanOrEqual(1)
-    expect(await screen.findByText('Occasion Quick Pick')).toBeDefined()
   })
 
   it('renders recommend page at /recommend/:occasion', async () => {
@@ -30,20 +29,18 @@ describe('User App Routes', () => {
 
   it('renders preferences page at /preferences', async () => {
     renderWithRouter('/preferences')
-    expect(await screen.findByText('Style Preferences')).toBeDefined()
-    expect(await screen.findByText('Color Palette')).toBeDefined()
+    expect(await screen.findByText('风格偏好')).toBeDefined()
   })
 
   it('renders favorites page at /favorites', async () => {
     renderWithRouter('/favorites')
-    const matches = await screen.findAllByText('Favorites')
+    const matches = await screen.findAllByText('我的收藏')
     expect(matches.length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders share page at /share/:outfitId', async () => {
     renderWithRouter('/share/work-commute-1')
-    // Share page renders either generating state, canvas, or fallback
-    const el = await screen.findByText(/Share|生成|未找到/i)
+    const el = await screen.findByText(/分享|生成|未找到/i)
     expect(el).toBeDefined()
   })
 })

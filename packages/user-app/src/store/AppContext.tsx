@@ -1,8 +1,8 @@
 import { createContext, useContext, useReducer, useEffect, type ReactNode, type Dispatch } from 'react'
-import type { Outfit, Occasion, UserPreferences, BrowsingHistoryEntry } from '@ggai/shared/types'
+import type { Occasion, UserPreferences, BrowsingHistoryEntry } from '@ggai/shared/types'
 import { seedOccasions, seedOutfits } from './seedData'
+import type { Outfit } from '@ggai/shared/types'
 
-// ---- State ----
 export interface AppState {
   occasions: Occasion[]
   outfits: Outfit[]
@@ -21,35 +21,22 @@ const initialState: AppState = {
   loading: true,
 }
 
-// ---- Actions ----
 export type AppAction =
   | { type: 'INIT_DATA'; occasions: Occasion[]; outfits: Outfit[]; preferences: UserPreferences; favorites: string[]; history: BrowsingHistoryEntry[] }
-  | { type: 'SET_LOADING'; loading: boolean }
   | { type: 'TOGGLE_FAVORITE'; outfitId: string }
   | { type: 'ADD_HISTORY'; entry: BrowsingHistoryEntry }
   | { type: 'UPDATE_PREFERENCES'; preferences: UserPreferences }
 
-// ---- Reducer ----
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'INIT_DATA':
-      return {
-        ...state,
-        occasions: action.occasions,
-        outfits: action.outfits,
-        preferences: action.preferences,
-        favorites: action.favorites,
-        browsingHistory: action.history,
-        loading: false,
-      }
-    case 'SET_LOADING':
-      return { ...state, loading: action.loading }
+      return { ...state, ...action, loading: false }
     case 'TOGGLE_FAVORITE': {
       const exists = state.favorites.includes(action.outfitId)
       const favorites = exists
         ? state.favorites.filter((id) => id !== action.outfitId)
         : [...state.favorites, action.outfitId]
-      localStorage.setItem('ggai-favorites', JSON.stringify(favorites))
+      localStorage.setItem('ggai-favs-v2', JSON.stringify(favorites))
       return { ...state, favorites }
     }
     case 'ADD_HISTORY': {
@@ -57,11 +44,11 @@ function appReducer(state: AppState, action: AppAction): AppState {
         { ...action.entry },
         ...state.browsingHistory.filter((e) => e.outfitId !== action.entry.outfitId),
       ].slice(0, 50)
-      localStorage.setItem('ggai-history', JSON.stringify(history))
+      localStorage.setItem('ggai-hist-v2', JSON.stringify(history))
       return { ...state, browsingHistory: history }
     }
     case 'UPDATE_PREFERENCES': {
-      localStorage.setItem('ggai-preferences', JSON.stringify(action.preferences))
+      localStorage.setItem('ggai-prefs-v2', JSON.stringify(action.preferences))
       return { ...state, preferences: action.preferences }
     }
     default:
@@ -69,24 +56,19 @@ function appReducer(state: AppState, action: AppAction): AppState {
   }
 }
 
-// ---- Context ----
 const AppContext = createContext<{ state: AppState; dispatch: Dispatch<AppAction> } | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState)
 
   useEffect(() => {
-    const occasions = seedOccasions
-    const outfits = JSON.parse(localStorage.getItem('ggai-outfits') || 'null') || seedOutfits
-    const preferences = JSON.parse(localStorage.getItem('ggai-preferences') || 'null') || initialState.preferences
-    const favorites = JSON.parse(localStorage.getItem('ggai-favorites') || 'null') || []
-    const history = JSON.parse(localStorage.getItem('ggai-history') || 'null') || []
+    // NEVER cache outfits to localStorage — always use latest seedData with current image URLs
+    const outfits = seedOutfits
+    const preferences = JSON.parse(localStorage.getItem('ggai-prefs-v2') || 'null') || initialState.preferences
+    const favorites = JSON.parse(localStorage.getItem('ggai-favs-v2') || 'null') || []
+    const history = JSON.parse(localStorage.getItem('ggai-hist-v2') || 'null') || []
 
-    if (!localStorage.getItem('ggai-outfits')) {
-      localStorage.setItem('ggai-outfits', JSON.stringify(seedOutfits))
-    }
-
-    dispatch({ type: 'INIT_DATA', occasions, outfits, preferences, favorites, history })
+    dispatch({ type: 'INIT_DATA', occasions: seedOccasions, outfits, preferences, favorites, history })
   }, [])
 
   return (

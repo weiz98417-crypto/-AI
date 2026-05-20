@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../store/AppContext'
+import { outfitImages } from '../assets/images'
 import TopAppBar from '../components/TopAppBar'
 import SearchBar from '../components/SearchBar'
 import BottomNavBar from '../components/BottomNavBar'
@@ -63,7 +64,7 @@ export default function HomePage() {
                   onClick={() => navigate(`/recommend/${o.id}`)}
                   className="relative h-56 rounded-xl overflow-hidden mb-2 w-full active:scale-[0.98] transition-transform"
                 >
-                  <img src={`/assets/outfits/${o.id}-card.jpg`} alt={o.name} className="w-full h-full object-cover" />
+                  <img src={outfitImages[`${o.id}-card`]} alt={o.name} className="w-full h-full object-cover" />
                   <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
                     <p className="text-xs font-semibold text-white" style={{ fontSize: '12px', lineHeight: '16px', fontWeight: 600 }}>
                       {o.name}

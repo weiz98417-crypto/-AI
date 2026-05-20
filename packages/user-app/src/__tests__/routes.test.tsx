@@ -17,28 +17,31 @@ function renderWithRouter(initialRoute = '/') {
 describe('User App Routes', () => {
   it('renders home page at /', async () => {
     renderWithRouter('/')
-    // After loading, should show "逛逛AI"
-    expect(await screen.findByText('逛逛AI')).toBeDefined()
+    const headings = await screen.findAllByText('GuangGuangAI')
+    expect(headings.length).toBeGreaterThanOrEqual(1)
+    expect(await screen.findByText('Occasion Quick Pick')).toBeDefined()
   })
 
   it('renders recommend page at /recommend/:occasion', async () => {
     renderWithRouter('/recommend/work-commute')
-    expect(await screen.findByText('穿搭推荐')).toBeDefined()
+    const matches = await screen.findAllByText('上班通勤')
+    expect(matches.length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders preferences page at /preferences', async () => {
     renderWithRouter('/preferences')
-    expect(await screen.findByText('风格偏好')).toBeDefined()
+    expect(await screen.findByText('Style Preferences')).toBeDefined()
+    expect(await screen.findByText('Color Palette')).toBeDefined()
   })
 
   it('renders favorites page at /favorites', async () => {
     renderWithRouter('/favorites')
-    expect(await screen.findByText('收藏与历史')).toBeDefined()
+    const matches = await screen.findAllByText('Favorites')
+    expect(matches.length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders share page at /share/:outfitId', async () => {
     renderWithRouter('/share/work-commute-1')
-    // Should show either generating, error, or the share page
-    expect(await screen.findByText('分享穿搭')).toBeDefined()
+    expect(await screen.findByText('GuangGuangAI')).toBeDefined()
   })
 })

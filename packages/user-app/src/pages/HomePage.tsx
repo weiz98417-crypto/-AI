@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../store/AppContext'
-import OccasionCard from '../components/OccasionCard'
+import TopAppBar from '../components/TopAppBar'
+import SearchBar from '../components/SearchBar'
+import BottomNavBar from '../components/BottomNavBar'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -8,69 +10,133 @@ export default function HomePage() {
 
   if (state.loading) {
     return (
-      <div className="max-w-md mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">逛逛AI</h1>
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-surface-container rounded-xl h-36 animate-pulse" />
-          ))}
-        </div>
-        <div className="h-6 w-32 bg-surface-container rounded animate-pulse mb-4" />
-        <div className="flex gap-4 overflow-hidden">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="min-w-[160px] h-48 bg-surface-container rounded-xl animate-pulse" />
-          ))}
-        </div>
+      <div className="min-h-screen bg-background">
+        <TopAppBar title="GuangGuangAI" showBack={false} />
+        <main className="pt-16 px-3 pb-24">
+          <div className="mb-6"><SearchBar /></div>
+          <div className="flex gap-3 overflow-x-auto hide-scrollbar px-0 mb-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex-shrink-0 w-40 h-56 rounded-xl bg-surface-container animate-pulse" />
+            ))}
+          </div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 flex animate-pulse">
+                <div className="w-1/3 aspect-[3/4] bg-surface-container" />
+                <div className="w-2/3 p-4 flex flex-col justify-between">
+                  <div><div className="h-3 w-24 bg-surface-container rounded mb-2" /><div className="h-4 w-40 bg-surface-container rounded" /></div>
+                  <div className="h-10 bg-surface-container rounded-lg" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+        <BottomNavBar />
       </div>
     )
   }
-
-  if (state.occasions.length === 0) {
-    return (
-      <div className="max-w-md mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">逛逛AI</h1>
-        <div className="text-center py-16">
-          <span className="material-symbols-outlined text-6xl text-outline mb-4">checkroom</span>
-          <p className="text-on-surface-variant">暂无推荐</p>
-        </div>
-      </div>
-    )
-  }
-
-  const recommendedOutfits = state.outfits.slice(0, 5)
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 pb-24">
-      <h1 className="text-3xl font-extrabold mb-2 bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-        逛逛AI
-      </h1>
-      <p className="text-on-surface-variant text-sm mb-6">AI帮你搭，每天不重样</p>
+    <div className="min-h-screen bg-background text-on-background">
+      <TopAppBar title="GuangGuangAI" showBack={false} />
 
-      <h2 className="text-lg font-semibold mb-3">选择场合</h2>
-      <div className="grid grid-cols-2 gap-3 mb-8">
-        {state.occasions.map((o) => (
-          <OccasionCard key={o.id} occasion={o} onClick={() => navigate(`/recommend/${o.id}`)} />
-        ))}
-      </div>
+      <main className="pt-14 pb-24">
+        {/* Search Bar */}
+        <section className="px-3 mb-6">
+          <SearchBar />
+        </section>
 
-      <h2 className="text-lg font-semibold mb-3">今日推荐</h2>
-      <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
-        {recommendedOutfits.map((outfit) => (
-          <div
-            key={outfit.id}
-            className="min-w-[160px] bg-surface-container rounded-xl overflow-hidden shadow-sm cursor-pointer active:scale-95 transition-transform"
-            onClick={() => navigate(`/recommend/${outfit.occasion}`)}
-          >
-            <div className="aspect-[3/4] bg-secondary-container flex items-center justify-center overflow-hidden">
-              <img src={outfit.coverImage} alt={outfit.name} className="w-full h-full object-cover" />
-            </div>
-            <div className="p-3">
-              <p className="font-semibold text-sm truncate">{outfit.name}</p>
-              <p className="text-xs text-on-surface-variant">¥{outfit.totalPrice}</p>
-            </div>
+        {/* Occasion Quick Pick */}
+        <section className="mb-6">
+          <div className="px-3 flex justify-between items-end mb-2">
+            <h2 className="text-xl font-bold text-on-surface" style={{ fontSize: '20px', lineHeight: '28px', letterSpacing: '-0.01em' }}>
+              Occasion Quick Pick
+            </h2>
+            <span className="text-xs font-semibold text-primary" style={{ fontSize: '12px', lineHeight: '16px' }}>
+              View All
+            </span>
           </div>
-        ))}
-      </div>
+          <div className="flex overflow-x-auto hide-scrollbar gap-3 px-3">
+            {state.occasions.map((o) => (
+              <div key={o.id} className="flex-shrink-0 w-40">
+                <button
+                  onClick={() => navigate(`/recommend/${o.id}`)}
+                  className="relative h-56 rounded-xl overflow-hidden mb-2 w-full active:scale-[0.98] transition-transform"
+                >
+                  <div className="w-full h-full bg-gradient-to-br from-primary-container/60 to-primary-fixed/40 flex items-center justify-center">
+                    <span className="text-5xl">{o.icon}</span>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+                    <p className="text-xs font-semibold text-white" style={{ fontSize: '12px', lineHeight: '16px', fontWeight: 600 }}>
+                      {o.name}
+                    </p>
+                  </div>
+                </button>
+                <p className="text-xs text-on-surface-variant px-0.5" style={{ fontSize: '13px', lineHeight: '18px' }}>
+                  {o.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Today's Picks */}
+        <section className="px-3">
+          <h2 className="text-xl font-bold text-on-surface mb-4" style={{ fontSize: '20px', lineHeight: '28px', letterSpacing: '-0.01em' }}>
+            Today's Picks
+          </h2>
+          <div className="space-y-4">
+            {state.outfits.slice(0, 4).map((outfit) => (
+              <div
+                key={outfit.id}
+                className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden shadow-sm flex"
+              >
+                <div className="w-1/3 aspect-[3/4]">
+                  <img
+                    src={outfit.coverImage}
+                    alt={outfit.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="w-2/3 p-4 flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="text-xs font-semibold text-on-surface" style={{ fontSize: '12px', lineHeight: '16px', fontWeight: 600 }}>
+                        {outfit.name}
+                      </h3>
+                      <span
+                        className="material-symbols-outlined text-primary text-lg"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        favorite
+                      </span>
+                    </div>
+                    <p className="text-xs text-on-surface-variant mb-2" style={{ fontSize: '13px', lineHeight: '18px' }}>
+                      {outfit.brandSummary}
+                    </p>
+                    <div className="flex gap-2">
+                      {outfit.styleTags.slice(0, 2).map((tag) => (
+                        <span key={tag} className="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded">
+                          {tag.toUpperCase()}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => navigate(`/recommend/${outfit.occasion}`)}
+                    className="w-full py-2 bg-primary text-white text-xs font-semibold rounded-lg active:opacity-70 transition-opacity"
+                    style={{ fontSize: '12px', lineHeight: '16px', fontWeight: 600 }}
+                  >
+                    View Details
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <BottomNavBar />
     </div>
   )
 }

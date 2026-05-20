@@ -2,20 +2,25 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../store/AppContext'
 import type { UserPreferences } from '@ggai/shared/types'
+import TopAppBar from '../components/TopAppBar'
 
-const COLORS = ['#f8a4c8', '#ffffff', '#1b1c1c', '#e8d5c4', '#a8c8e8', '#8c9c8c', '#d4a4a4', '#c8b8e8']
-const COLOR_NAMES = ['粉色', '白色', '黑色', '米色', '蓝色', '绿色', '棕色', '紫色']
-
-type PriceTier = UserPreferences['priceTier']
-
-const PRICE_TIERS: { value: PriceTier; label: string }[] = [
-  { value: 'budget', label: '¥200以下' },
-  { value: 'mid', label: '¥200-500' },
-  { value: 'premium', label: '¥500-1000' },
-  { value: 'all', label: '不限' },
+const COLOR_SWATCHES = [
+  { name: 'Blush', hex: '#E8A0B9' }, { name: 'Charcoal', hex: '#2D2D2D' },
+  { name: 'Sand', hex: '#F5F0F0' }, { name: 'Mauve', hex: '#874C63' },
+  { name: 'Pristine', hex: '#FFFFFF' }, { name: 'Sage', hex: '#605E5E' },
+  { name: 'Taupe', hex: '#D5C2C6' }, { name: 'Steel', hex: '#484647' },
+  { name: 'Oyster', hex: '#E6E1E1' }, { name: 'Cloud', hex: '#B3B4B4' },
+  { name: 'Bordeaux', hex: '#6C354B' }, { name: 'Midnight', hex: '#1B1C1C' },
 ]
 
-const STYLE_TAGS = ['简约通勤', '优雅知性', '潮流街头', '温柔甜美', '职业精英', '休闲舒适']
+const BUDGET_TIERS: { value: UserPreferences['priceTier']; label: string; desc: string }[] = [
+  { value: 'premium', label: 'Premium', desc: 'High-end luxury and boutique labels' },
+  { value: 'mid', label: 'Mid-range', desc: 'Contemporary brands and designer diffusion' },
+  { value: 'budget', label: 'Affordable', desc: 'Quality essentials and high-street favorites' },
+  { value: 'all', label: 'No Limit', desc: 'Show me everything tailored to my taste' },
+]
+
+const STYLE_TAGS = ['Minimalist Office', 'Elegant Chic', 'Trendy Street', 'Soft Feminine']
 
 export default function PreferencesPage() {
   const navigate = useNavigate()
@@ -23,21 +28,17 @@ export default function PreferencesPage() {
   const [prefs, setPrefs] = useState({ ...state.preferences })
   const [toast, setToast] = useState('')
 
-  const toggleColor = (colorName: string) => {
-    setPrefs((prev) => ({
-      ...prev,
-      colors: prev.colors.includes(colorName)
-        ? prev.colors.filter((c) => c !== colorName)
-        : [...prev.colors, colorName],
+  const toggleColor = (name: string) => {
+    setPrefs((p) => ({
+      ...p,
+      colors: p.colors.includes(name) ? p.colors.filter((c) => c !== name) : [...p.colors, name],
     }))
   }
 
   const toggleStyle = (tag: string) => {
-    setPrefs((prev) => ({
-      ...prev,
-      styleTags: prev.styleTags.includes(tag)
-        ? prev.styleTags.filter((t) => t !== tag)
-        : [...prev.styleTags, tag],
+    setPrefs((p) => ({
+      ...p,
+      styleTags: p.styleTags.includes(tag) ? p.styleTags.filter((t) => t !== tag) : [...p.styleTags, tag],
     }))
   }
 
@@ -48,90 +49,132 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 pb-24">
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate(-1)} className="material-symbols-outlined text-on-surface">
-          arrow_back
+    <div className="min-h-screen bg-background text-on-background pb-32">
+      <TopAppBar title="Style Preferences" />
+
+      <main className="pt-16 px-3">
+        {/* Hero image */}
+        <section className="mb-6">
+          <div className="rounded-xl overflow-hidden relative h-40 mb-4 bg-gradient-to-br from-primary-container/80 to-primary-fixed/60">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex flex-col justify-end p-4">
+              <p className="text-xs font-semibold text-white/90" style={{ fontSize: '12px', lineHeight: '16px', fontWeight: 600 }}>
+                Refine Your Look
+              </p>
+              <h2 className="text-lg font-bold text-white" style={{ fontSize: '18px', lineHeight: '24px', fontWeight: 700 }}>
+                Your Personal Aesthetic
+              </h2>
+            </div>
+          </div>
+          <p className="text-sm text-on-surface-variant" style={{ fontSize: '14px', lineHeight: '20px' }}>
+            Configure your fashion DNA to help us curate pieces that resonate with your unique urban lifestyle.
+          </p>
+        </section>
+
+        {/* Color Palette */}
+        <section className="mb-6">
+          <h3 className="text-xs font-semibold text-on-surface-variant mb-2 uppercase tracking-wider" style={{ fontSize: '12px', lineHeight: '16px', fontWeight: 600 }}>
+            Color Palette
+          </h3>
+          <div className="grid grid-cols-4 gap-4">
+            {COLOR_SWATCHES.map((c) => {
+              const selected = prefs.colors.includes(c.name)
+              return (
+                <button key={c.name} onClick={() => toggleColor(c.name)} className="flex flex-col items-center gap-2">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                      selected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : 'hover:opacity-80'
+                    } ${c.hex === '#FFFFFF' || c.hex === '#F5F0F0' ? 'border border-outline-variant' : ''}`}
+                    style={{ backgroundColor: c.hex }}
+                  >
+                    {selected && (
+                      <span className="material-symbols-outlined text-[18px]" style={{ color: c.hex === '#FFFFFF' || c.hex === '#F5F0F0' ? '#874c63' : '#ffffff', fontVariationSettings: "'FILL' 1" }}>
+                        check
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs text-on-surface-variant" style={{ fontSize: '12px', lineHeight: '16px' }}>
+                    {c.name}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Budget Tier */}
+        <section className="mb-6">
+          <h3 className="text-xs font-semibold text-on-surface-variant mb-2 uppercase tracking-wider" style={{ fontSize: '12px', lineHeight: '16px', fontWeight: 600 }}>
+            Investment Tier
+          </h3>
+          <div className="space-y-2">
+            {BUDGET_TIERS.map((tier) => {
+              const selected = prefs.priceTier === tier.value
+              return (
+                <label
+                  key={tier.value}
+                  onClick={() => setPrefs((p) => ({ ...p, priceTier: tier.value }))}
+                  className={`flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl border cursor-pointer active:bg-surface-container-low transition-colors ${
+                    selected ? 'border-primary' : 'border-outline-variant'
+                  }`}
+                >
+                  <div className="flex flex-col">
+                    <span className={`text-sm font-bold ${selected ? 'text-on-surface' : 'text-on-surface'}`} style={{ fontSize: '14px', lineHeight: '20px', fontWeight: 700 }}>
+                      {tier.label}
+                    </span>
+                    <span className="text-xs text-on-surface-variant" style={{ fontSize: '12px', lineHeight: '16px' }}>
+                      {tier.desc}
+                    </span>
+                  </div>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selected ? 'border-primary' : 'border-outline-variant'}`}>
+                    {selected && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                  </div>
+                </label>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Style Identity */}
+        <section className="mb-6">
+          <h3 className="text-xs font-semibold text-on-surface-variant mb-2 uppercase tracking-wider" style={{ fontSize: '12px', lineHeight: '16px', fontWeight: 600 }}>
+            Style Identity
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {STYLE_TAGS.map((tag) => {
+              const selected = prefs.styleTags.includes(tag)
+              return (
+                <button
+                  key={tag}
+                  onClick={() => toggleStyle(tag)}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
+                    selected
+                      ? 'bg-primary-container/10 border border-primary text-primary'
+                      : 'bg-surface-container-lowest border border-outline-variant text-on-surface-variant'
+                  }`}
+                  style={{ fontSize: '12px', lineHeight: '16px', fontWeight: 600 }}
+                >
+                  {tag}
+                </button>
+              )
+            })}
+          </div>
+        </section>
+      </main>
+
+      {/* Sticky Bottom Save Button */}
+      <footer className="fixed bottom-0 w-full p-3 bg-background/80 backdrop-blur-md">
+        <button
+          onClick={handleSave}
+          className="w-full h-12 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-lg active:scale-[0.98] transition-transform"
+          style={{ fontSize: '14px', lineHeight: '20px', fontWeight: 700 }}
+        >
+          Save Preferences
         </button>
-        <h1 className="text-xl font-bold">风格偏好</h1>
-      </div>
-
-      {/* Color preferences */}
-      <section className="mb-8">
-        <h2 className="font-semibold mb-3">颜色偏好</h2>
-        <div className="flex flex-wrap gap-3">
-          {COLORS.map((color, i) => {
-            const name = COLOR_NAMES[i]
-            const selected = prefs.colors.includes(name)
-            return (
-              <button
-                key={name}
-                onClick={() => toggleColor(name)}
-                className={`w-12 h-12 rounded-xl border-2 transition-all ${
-                  selected ? 'border-primary scale-110 shadow-md' : 'border-outline-variant'
-                }`}
-                style={{ backgroundColor: color }}
-                title={name}
-              />
-            )
-          })}
-        </div>
-      </section>
-
-      {/* Budget */}
-      <section className="mb-8">
-        <h2 className="font-semibold mb-3">预算档位</h2>
-        <div className="flex flex-wrap gap-2">
-          {PRICE_TIERS.map((tier) => (
-            <button
-              key={tier.value}
-              onClick={() => setPrefs((prev) => ({ ...prev, priceTier: tier.value }))}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
-                prefs.priceTier === tier.value
-                  ? 'bg-primary text-on-primary'
-                  : 'bg-surface-container text-on-surface-variant'
-              }`}
-            >
-              {tier.label}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* Style tags */}
-      <section className="mb-8">
-        <h2 className="font-semibold mb-3">风格标签</h2>
-        <div className="flex flex-wrap gap-2">
-          {STYLE_TAGS.map((tag) => {
-            const selected = prefs.styleTags.includes(tag)
-            return (
-              <button
-                key={tag}
-                onClick={() => toggleStyle(tag)}
-                className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                  selected
-                    ? 'bg-primary-container text-on-primary-container font-medium'
-                    : 'bg-surface-container text-on-surface-variant'
-                }`}
-              >
-                {tag}
-              </button>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* Save button */}
-      <button
-        onClick={handleSave}
-        className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-semibold text-lg active:scale-95 transition-transform"
-      >
-        保存偏好
-      </button>
+      </footer>
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-full text-sm shadow-lg animate-bounce">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-full text-sm shadow-lg z-50 animate-bounce">
           {toast}
         </div>
       )}

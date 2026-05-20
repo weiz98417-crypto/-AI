@@ -1,78 +1,187 @@
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import { useAdmin } from '../store/AdminContext'
 
-const PIE_COLORS = ['#874c63', '#e8a0b9', '#fcb2cb', '#ffd9e4']
-const BAR_COLOR = '#874c63'
+const STYLE_BARS = [
+  { name: '简约通勤', pct: 42, color: 'bg-primary-container' },
+  { name: '优雅知性', pct: 28, color: 'bg-primary' },
+  { name: '波西米亚', pct: 18, color: 'bg-tertiary-container' },
+  { name: '街头轻奢', pct: 12, color: 'bg-secondary-container' },
+]
+
+const COLORS = [
+  { name: '珊瑚粉', hex: '#E8A0B9', pct: 35 },
+  { name: '天蓝色', hex: '#A0BEE8', pct: 24 },
+  { name: '灰绿色', hex: '#D4E2D4', pct: 19 },
+  { name: '午夜黑', hex: '#342F30', pct: 15 },
+]
+
+const COHORTS = [
+  { label: '8月1日', values: [100, 82, 75, 68, 52, 48, 41, 35] },
+  { label: '8月8日', values: [100, 85, 78, 72, 64, 59, 55, null] },
+  { label: '8月15日', values: [100, 88, 81, 76, 69, 65, null, null] },
+]
 
 export default function AnalyticsPage() {
   const { state } = useAdmin()
 
   if (state.loading) {
     return (
-      <div>
-        <h1 className="text-2xl font-bold mb-8">用户偏好分析</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-surface rounded-2xl h-80 animate-pulse" />
-          <div className="bg-surface rounded-2xl h-80 animate-pulse" />
+      <div className="space-y-6">
+        <div className="h-8 w-48 bg-surface rounded animate-pulse mb-2" />
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-8 bg-surface rounded-3xl h-80 animate-pulse" />
+          <div className="col-span-4 bg-surface rounded-3xl h-80 animate-pulse" />
         </div>
       </div>
     )
   }
 
-  const { analytics } = state
-  const isEmpty = analytics.styleDistribution.length === 0
-
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-8">用户偏好分析</h1>
+    <div className="space-y-6">
+      <header className="mb-6">
+        <h2 className="text-[32px] font-bold text-primary mb-1">用户偏好分析</h2>
+        <p className="text-sm text-secondary">深入了解用户的风格偏好与留存数据</p>
+      </header>
 
-      {isEmpty ? (
-        <div className="text-center py-16">
-          <span className="material-symbols-outlined text-6xl text-outline mb-4">donut_small</span>
-          <p className="text-on-surface-variant">暂无偏好分析数据</p>
+      <div className="grid grid-cols-12 gap-6">
+        {/* Style Bars */}
+        <div className="col-span-12 lg:col-span-8 bg-white/70 backdrop-blur-sm border border-primary-container/20 rounded-3xl p-8">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-xl font-semibold text-primary flex items-center gap-2">
+              <span>📊</span> 热门风格
+            </h3>
+            <select className="bg-surface border border-outline-variant/30 rounded-lg text-xs py-1.5 px-3">
+              <option>最近30天</option>
+              <option>最近90天</option>
+            </select>
+          </div>
+          <div className="space-y-5">
+            {STYLE_BARS.map((bar) => (
+              <div key={bar.name} className="space-y-1.5">
+                <div className="flex justify-between text-xs text-secondary font-semibold">
+                  <span>{bar.name}</span>
+                  <span className="text-primary font-bold">{bar.pct}%</span>
+                </div>
+                <div className="h-9 bg-surface-container rounded-full overflow-hidden flex items-center px-1">
+                  <div
+                    className={`h-7 ${bar.color} rounded-full transition-all duration-1000`}
+                    style={{ width: `${bar.pct}%`, minWidth: bar.pct > 0 ? '30px' : '0' }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Style Distribution Pie Chart */}
-          <div className="bg-surface rounded-2xl p-6 shadow-sm">
-            <h2 className="font-semibold mb-4">风格偏好分布</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={analytics.styleDistribution}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={110}
-                  paddingAngle={4}
-                  dataKey="value"
-                  nameKey="name"
-                  label={({ name, value }) => `${name} ${value}%`}
+
+        {/* Trending Colors */}
+        <div className="col-span-12 lg:col-span-4 bg-white/70 backdrop-blur-sm border border-primary-container/20 rounded-3xl p-8">
+          <h3 className="text-xl font-semibold text-primary mb-8">流行色系</h3>
+          <div className="flex flex-col gap-5">
+            {COLORS.map((c) => (
+              <div key={c.name} className="flex items-center gap-4 group">
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center transition-transform group-hover:scale-110 shadow-lg shrink-0"
+                  style={{ backgroundColor: c.hex, boxShadow: `0 4px 12px ${c.hex}33` }}
                 >
-                  {analytics.styleDistribution.map((_, idx) => (
-                    <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+                  <span className={`text-xs font-bold ${c.hex === '#342F30' || c.hex === '#874C63' ? 'text-white' : 'text-on-surface'}`}>
+                    {c.pct}%
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-on-surface">{c.name}</p>
+                  <p className="text-xs text-secondary">{c.hex}</p>
+                </div>
+              </div>
+            ))}
           </div>
-
-          {/* Color Preferences Bar Chart */}
-          <div className="bg-surface rounded-2xl p-6 shadow-sm">
-            <h2 className="font-semibold mb-4">颜色偏好</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={analytics.colorPreferences} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e4e2e1" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#837377" />
-                <YAxis tick={{ fontSize: 12 }} stroke="#837377" />
-                <Tooltip />
-                <Bar dataKey="count" fill={BAR_COLOR} radius={[8, 8, 0, 0]} name="偏好人数" />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="mt-8 pt-6 border-t border-outline-variant/20">
+            <div className="p-4 bg-surface-container rounded-2xl">
+              <p className="text-xs text-primary font-bold mb-1">💡 风格洞察</p>
+              <p className="text-sm text-secondary">用户本周偏爱高对比度配色，建议推荐更多午夜黑搭配方案。</p>
+            </div>
           </div>
         </div>
-      )}
+
+        {/* Retention Cohort */}
+        <div className="col-span-12 bg-white/70 backdrop-blur-sm border border-primary-container/20 rounded-3xl p-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+            <div>
+              <h3 className="text-xl font-semibold text-primary">用户留存分析</h3>
+              <p className="text-sm text-secondary">按周获客队列的留存率</p>
+            </div>
+            <div className="flex gap-3">
+              <span className="flex items-center gap-1 text-xs text-secondary"><div className="w-3 h-3 bg-primary rounded-sm" /> 高</span>
+              <span className="flex items-center gap-1 text-xs text-secondary"><div className="w-3 h-3 bg-primary/40 rounded-sm" /> 中</span>
+              <span className="flex items-center gap-1 text-xs text-secondary"><div className="w-3 h-3 bg-surface-container rounded-sm" /> 低</span>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <div className="min-w-[700px]">
+              {/* Header */}
+              <div className="grid grid-cols-9 gap-1 mb-2">
+                <div className="text-xs text-secondary font-semibold px-2">队列</div>
+                {['第0周', '第1周', '第2周', '第3周', '第4周', '第5周', '第6周', '第7周'].map((w) => (
+                  <div key={w} className="text-xs text-secondary font-semibold text-center">{w}</div>
+                ))}
+              </div>
+
+              {/* Rows */}
+              <div className="space-y-1">
+                {COHORTS.map((cohort, ri) => (
+                  <div key={ri} className="grid grid-cols-9 gap-1">
+                    <div className="bg-surface px-3 py-2 rounded-lg text-xs text-primary font-semibold border border-outline-variant/10">
+                      {cohort.label}
+                    </div>
+                    {cohort.values.map((v, ci) => {
+                      if (v === null) return <div key={ci} className="bg-surface-container text-on-surface/30 text-center py-2 rounded-lg text-xs">--</div>
+                      const alpha = 1 - (ci * 0.08)
+                      return (
+                        <div
+                          key={ci}
+                          className="text-white text-center py-2 rounded-lg text-xs font-semibold"
+                          style={{ backgroundColor: `rgba(135,76,99,${Math.max(0.15, alpha)})` }}
+                        >{v}%</div>
+                      )
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Insight cards */}
+          <div className="grid grid-cols-3 gap-4 mt-6">
+            <div className="bg-surface p-5 rounded-2xl border border-outline-variant/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-lg">📈</div>
+                <h4 className="text-sm font-semibold">转化率</h4>
+              </div>
+              <p className="text-2xl font-bold">12.4%</p>
+              <p className="text-xs text-green-600 font-semibold mt-1">↑ +2.4% 较上周</p>
+            </div>
+            <div className="bg-surface p-5 rounded-2xl border border-outline-variant/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-tertiary/10 flex items-center justify-center text-tertiary text-lg">👥</div>
+                <h4 className="text-sm font-semibold">活跃用户</h4>
+              </div>
+              <p className="text-2xl font-bold">1,842</p>
+              <p className="text-xs text-secondary mt-1">12分钟前更新</p>
+            </div>
+            <div className="bg-surface p-5 rounded-2xl border border-outline-variant/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary text-lg">❤️</div>
+                <h4 className="text-sm font-semibold">用户满意度</h4>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-3 bg-surface-container rounded-full overflow-hidden">
+                  <div className="h-full bg-primary-container rounded-full" style={{ width: '88%' }} />
+                </div>
+                <span className="text-sm font-bold text-primary">88%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

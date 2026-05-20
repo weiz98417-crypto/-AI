@@ -34,7 +34,7 @@ describe('Admin App Routes', () => {
     const passwordInput = screen.getByPlaceholderText('请输入密码')
     fireEvent.change(passwordInput, { target: { value: '888888' } })
     fireEvent.click(screen.getByText('登录'))
-    const headings = await screen.findAllByText('数据Dashboard')
+    const headings = await screen.findAllByText('数据看板')
     expect(headings.length).toBeGreaterThanOrEqual(1)
   })
 })

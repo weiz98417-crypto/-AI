@@ -47,7 +47,7 @@ export default function AnalyticsPage() {
         <div className="col-span-12 lg:col-span-8 bg-white/70 backdrop-blur-sm border border-primary-container/20 rounded-3xl p-8">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-xl font-semibold text-primary flex items-center gap-2">
-              <span>📊</span> 热门风格
+              热门风格
             </h3>
             <select className="bg-surface border border-outline-variant/30 rounded-lg text-xs py-1.5 px-3">
               <option>最近30天</option>
@@ -95,7 +95,7 @@ export default function AnalyticsPage() {
           </div>
           <div className="mt-8 pt-6 border-t border-outline-variant/20">
             <div className="p-4 bg-surface-container rounded-2xl">
-              <p className="text-xs text-primary font-bold mb-1">💡 风格洞察</p>
+              <p className="text-xs text-primary font-bold mb-1">风格洞察</p>
               <p className="text-sm text-secondary">用户本周偏爱高对比度配色，建议推荐更多午夜黑搭配方案。</p>
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="bg-surface p-5 rounded-2xl border border-outline-variant/20">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-lg">📈</div>
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><span className="w-3 h-3 rounded-sm bg-primary inline-block" /></div>
                 <h4 className="text-sm font-semibold">转化率</h4>
               </div>
               <p className="text-2xl font-bold">12.4%</p>
@@ -161,7 +161,7 @@ export default function AnalyticsPage() {
             </div>
             <div className="bg-surface p-5 rounded-2xl border border-outline-variant/20">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-tertiary/10 flex items-center justify-center text-tertiary text-lg">👥</div>
+                <div className="w-10 h-10 rounded-xl bg-tertiary/10 flex items-center justify-center"><span className="w-3 h-3 rounded-sm bg-tertiary inline-block" /></div>
                 <h4 className="text-sm font-semibold">活跃用户</h4>
               </div>
               <p className="text-2xl font-bold">1,842</p>
@@ -169,7 +169,7 @@ export default function AnalyticsPage() {
             </div>
             <div className="bg-surface p-5 rounded-2xl border border-outline-variant/20">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary text-lg">❤️</div>
+                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center"><span className="w-3 h-3 rounded-sm bg-secondary inline-block" /></div>
                 <h4 className="text-sm font-semibold">用户满意度</h4>
               </div>
               <div className="flex items-center gap-3">

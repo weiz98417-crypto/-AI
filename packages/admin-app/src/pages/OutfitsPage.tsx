@@ -55,7 +55,7 @@ export default function OutfitsPage() {
         </div>
         <div className="flex gap-3">
           <button className="px-4 py-2 flex items-center gap-2 bg-surface border border-outline-variant/40 rounded-lg text-secondary hover:border-primary transition-all text-xs font-semibold">
-            🔽 筛选
+            筛选
           </button>
           <button className="px-4 py-2 flex items-center gap-2 bg-primary text-white rounded-lg hover:opacity-90 transition-all text-xs font-semibold shadow-sm">
             ＋ 新增穿搭
@@ -66,14 +66,14 @@ export default function OutfitsPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { label: '已发布', value: total, icon: '✅', color: 'bg-primary/10 text-primary' },
-          { label: '草稿', value: 3, icon: '📝', color: 'bg-secondary/10 text-secondary' },
-          { label: '平均点击率', value: '8.5%', icon: '📈', color: 'bg-tertiary-container/30 text-tertiary' },
-          { label: '总曝光', value: '42.5k', icon: '👁️', color: 'bg-error-container/30 text-error' },
+          { label: '已发布', value: total, dot: 'bg-green-500' },
+          { label: '草稿', value: 3, dot: 'bg-secondary' },
+          { label: '平均点击率', value: '8.5%', dot: 'bg-tertiary' },
+          { label: '总曝光', value: '42.5k', dot: 'bg-red-400' },
         ].map((s) => (
           <div key={s.label} className="bg-surface p-5 rounded-2xl border border-outline-variant/20 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between mb-3">
-              <span className={`p-2 ${s.color} rounded-lg text-lg`}>{s.icon}</span>
+              <span className={`w-3 h-3 rounded-full ${s.dot} inline-block`} />
             </div>
             <p className="text-xs text-secondary font-semibold uppercase tracking-wider">{s.label}</p>
             <p className="text-2xl font-bold mt-1">{s.value}</p>
@@ -144,7 +144,7 @@ export default function OutfitsPage() {
                         >
                           {outfit.active ? '下架' : '上架'}
                         </button>
-                        <button className="p-1.5 text-secondary hover:text-primary hover:bg-primary/10 rounded-lg transition-all text-sm">✏️</button>
+                        <button className="p-1.5 text-secondary hover:text-primary hover:bg-primary/10 rounded-lg transition-all text-sm font-semibold">Edit</button>
                       </div>
                     </td>
                   </tr>

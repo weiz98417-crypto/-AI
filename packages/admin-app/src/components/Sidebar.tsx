@@ -2,9 +2,9 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useAdmin } from '../store/AdminContext'
 
 const NAV = [
-  { path: '/', label: '数据看板', icon: '📊' },
-  { path: '/analytics', label: '用户洞察', icon: '📈' },
-  { path: '/outfits', label: '内容管理', icon: '👗' },
+  { path: '/', label: '数据看板' },
+  { path: '/analytics', label: '用户洞察' },
+  { path: '/outfits', label: '内容管理' },
 ]
 
 export default function Sidebar() {
@@ -32,7 +32,7 @@ export default function Sidebar() {
                   : 'text-secondary hover:text-primary hover:bg-surface-container-low'
               }`}
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-primary' : 'bg-outline-variant'}`} />
               <span>{item.label}</span>
             </button>
           )
@@ -40,16 +40,18 @@ export default function Sidebar() {
       </nav>
 
       <div className="mt-auto px-6 space-y-3">
-        <button className="w-full bg-primary-container text-on-primary-container py-3 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-          <span className="text-lg">✨</span>
-          新建推荐
+        <button
+          onClick={() => navigate('/outfits')}
+          className="w-full bg-primary-container text-on-primary-container py-3 px-4 rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity text-center"
+        >
+          + 新建推荐
         </button>
         <div className="pt-4 border-t border-outline-variant/20">
           <button
             onClick={() => dispatch({ type: 'LOGOUT' })}
-            className="flex items-center gap-3 text-secondary hover:text-primary py-2 transition-colors text-sm w-full text-left"
+            className="flex items-center gap-3 text-secondary hover:text-error py-2 transition-colors text-sm w-full text-left"
           >
-            <span className="text-lg">🚪</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-outline-variant" />
             退出登录
           </button>
         </div>

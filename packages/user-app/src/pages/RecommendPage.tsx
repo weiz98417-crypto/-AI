@@ -121,7 +121,7 @@ export default function RecommendPage() {
                 : 'bg-gradient-to-r from-primary to-primary-light text-white shadow-md active:scale-[0.98]'
             }`}
           >
-            <span className="text-lg">{aiGenerating ? '🔄' : '🤖'}</span>
+            <span className="text-lg">{aiGenerating ? '🔄' : '✨'}</span>
             {aiGenerating ? 'AI is analyzing your preferences...' : 'AI Generate Best Pick'}
           </button>
         </div>
@@ -129,7 +129,7 @@ export default function RecommendPage() {
         {aiGeneratedId && (
           <div className="bg-primary-fixed/30 border border-primary/20 rounded-xl p-3 mb-4">
             <div className="text-sm mb-1">
-              <span className="text-primary font-semibold">🤖 逛逛AI Pick: </span>
+              <span className="text-primary font-semibold">✨ 逛逛AI Pick: </span>
               <span className="text-on-surface">
                 {state.outfits.find((o) => o.id === aiGeneratedId)?.name}
               </span>
@@ -182,7 +182,7 @@ export default function RecommendPage() {
 
                     {/* AI Score */}
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-xs">🤖</span>
+                      <span className="text-xs">✨</span>
                       <div className="flex-1 h-1 bg-surface-container rounded-full overflow-hidden">
                         <div
                           className="h-full bg-primary rounded-full"

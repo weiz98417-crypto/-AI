@@ -75,13 +75,13 @@ export default function HomePage() {
       <section className="px-3">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-[20px] font-bold text-on-surface">AI Curated For You</h2>
-          <span className="text-sm">🤖</span>
+          <span className="text-sm">✨</span>
         </div>
 
         {aiThinking ? (
           <div className="bg-surface-container-lowest rounded-2xl border border-primary/20 p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center animate-pulse text-lg">🤖</div>
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center animate-pulse text-lg">✨</div>
               <div>
                 <p className="text-sm font-semibold text-primary">AI Engine Running</p>
                 <p className="text-xs text-on-surface-variant">{phrases[thinkStep] || 'Generating...'}</p>
@@ -131,7 +131,7 @@ export default function HomePage() {
             })}
             {aiAdvice && (
               <div className="mt-4 bg-primary-fixed/30 border border-primary/20 rounded-xl p-4">
-                <p className="text-xs font-semibold text-primary mb-1">🤖 逛逛AI 推荐语</p>
+                <p className="text-xs font-semibold text-primary mb-1">✨ 逛逛AI 推荐语</p>
                 <p className="text-sm text-on-surface leading-relaxed whitespace-pre-line">{aiAdvice}</p>
               </div>
             )}

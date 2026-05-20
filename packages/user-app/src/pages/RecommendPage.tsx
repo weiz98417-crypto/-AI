@@ -32,7 +32,7 @@ export default function RecommendPage() {
       {/* Header */}
       <header className="fixed top-0 w-full z-50 bg-background flex items-center justify-between px-3 h-12">
         <button onClick={() => navigate('/')} className="active:opacity-70">
-          <span className="material-symbols-outlined text-primary">arrow_back_ios</span>
+          ←
         </button>
         <h1 className="text-lg font-bold text-on-surface">{currentOccasion?.name || '穿搭推荐'}</h1>
         <div className="w-6" />
@@ -67,7 +67,7 @@ export default function RecommendPage() {
                 <option value="premium">¥500-1000</option>
                 <option value="luxury">¥1000+</option>
               </select>
-              <span className="material-symbols-outlined text-[16px] text-on-surface-variant absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none">expand_more</span>
+              <span className="text-xs text-on-surface-variant absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">▼</span>
             </div>
           </div>
         </div>
@@ -76,7 +76,7 @@ export default function RecommendPage() {
         <div className="mt-4 flex flex-col gap-6">
           {filteredOutfits.length === 0 ? (
             <div className="text-center py-20">
-              <span className="material-symbols-outlined text-6xl text-outline mb-4">checkroom</span>
+              <span className="text-5xl">👗</span>
               <p className="text-on-surface-variant">该场合暂无推荐方案</p>
             </div>
           ) : (
@@ -92,9 +92,7 @@ export default function RecommendPage() {
                       onClick={(e) => { e.stopPropagation(); dispatch({ type: 'TOGGLE_FAVORITE', outfitId: outfit.id }) }}
                       className={`absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-sm active:scale-95 transition-transform ${isFav ? 'text-primary' : 'text-secondary'}`}
                     >
-                      <span className="material-symbols-outlined" style={{ fontVariationSettings: `'FILL' ${isFav ? 1 : 0}` }}>
-                        favorite
-                      </span>
+                      {isFav ? '❤️' : '🤍'}
                     </button>
                     <span className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
                       {PRICE_RANGE_MAP[outfit.priceRange]?.label}

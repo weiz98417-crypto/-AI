@@ -101,7 +101,7 @@ export default function SharePage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center px-6">
-          <span className="material-symbols-outlined text-7xl text-outline mb-4">error_outline</span>
+          <span className="text-5xl">⚠️</span>
           <p className="text-lg font-bold text-on-surface-variant mb-2">未找到该穿搭</p>
           <button onClick={() => navigate('/')} className="px-6 py-2.5 bg-primary text-on-primary rounded-full text-sm font-semibold">返回首页</button>
         </div>
@@ -113,7 +113,7 @@ export default function SharePage() {
     <div className="min-h-screen bg-background pb-40">
       <header className="fixed top-0 w-full z-50 bg-background flex items-center justify-between px-3 h-12">
         <button onClick={() => navigate(-1)} className="active:opacity-70">
-          <span className="material-symbols-outlined text-primary">arrow_back_ios</span>
+          ←
         </button>
         <h1 className="text-lg font-bold text-on-surface">Share</h1>
         <div className="w-6" />
@@ -152,7 +152,7 @@ export default function SharePage() {
           <div className="flex gap-3">
             <button onClick={handleDownload}
               className="flex-1 py-4 bg-primary text-on-primary rounded-xl text-lg font-bold active:opacity-90 flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined">download</span>
+              ⬇️
               Save Image
             </button>
           </div>

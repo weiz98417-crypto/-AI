@@ -2,9 +2,9 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useAdmin } from '../store/AdminContext'
 
 const NAV_ITEMS = [
-  { path: '/', label: '数据Dashboard', icon: 'dashboard' },
-  { path: '/analytics', label: '用户偏好分析', icon: 'analytics' },
-  { path: '/outfits', label: '穿搭管理', icon: 'checkroom' },
+  { path: '/', label: 'Dashboard', icon: '📊' },
+  { path: '/analytics', label: '用户偏好分析', icon: '📈' },
+  { path: '/outfits', label: '穿搭管理', icon: '👗' },
 ]
 
 export default function Sidebar() {
@@ -34,7 +34,7 @@ export default function Sidebar() {
                   : 'text-on-surface-variant hover:bg-surface-container'
               }`}
             >
-              <span className="material-symbols-outlined">{item.icon}</span>
+              <span className="text-xl">{item.icon}</span>
               <span className="text-sm">{item.label}</span>
             </button>
           )
@@ -45,7 +45,7 @@ export default function Sidebar() {
         onClick={() => dispatch({ type: 'LOGOUT' })}
         className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-error transition-colors"
       >
-        <span className="material-symbols-outlined">logout</span>
+        <span className="text-xl">🚪</span>
         <span className="text-sm">退出登录</span>
       </button>
     </aside>

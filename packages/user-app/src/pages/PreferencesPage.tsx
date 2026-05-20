@@ -44,7 +44,7 @@ export default function PreferencesPage() {
     <div className="min-h-screen bg-background pb-28">
       <header className="fixed top-0 w-full z-50 bg-background flex items-center justify-between px-3 h-12">
         <button onClick={() => navigate(-1)} className="active:opacity-70">
-          <span className="material-symbols-outlined text-primary">arrow_back_ios</span>
+          ←
         </button>
         <h1 className="text-lg font-bold text-on-surface">Style Preferences</h1>
         <div className="w-6" />
@@ -73,7 +73,7 @@ export default function PreferencesPage() {
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
                     selected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''
                   } ${isLight ? 'border border-outline-variant' : ''}`} style={{ backgroundColor: c.hex }}>
-                    {selected && <span className="material-symbols-outlined text-[18px]" style={{ color: isLight ? '#874c63' : '#fff', fontVariationSettings: "'FILL' 1" }}>check</span>}
+                    {selected && <span className="text-sm font-bold" style={{ color: isLight ? '#874c63' : '#fff' }}>✓</span>}
                   </div>
                   <span className="text-xs text-on-surface-variant">{c.name}</span>
                 </button>

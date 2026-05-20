@@ -35,14 +35,14 @@ export default function FavoritesPage() {
       {/* Stats */}
       <div className="px-3 mb-4">
         <p className="text-xs text-secondary">{tab === 'favorites' ? 'Saved Items' : 'Recently Viewed'}</p>
-        <h2 className="text-2xl font-bold text-on-surface">{items.length} {tab === 'favorites' ? 'Curated' : 'Items'}</h2>
+        <p className="text-lg font-bold text-on-surface">{items.length} {tab === 'favorites' ? 'curated outfits' : 'items viewed'}</p>
       </div>
 
       {/* Content */}
       {items.length === 0 ? (
         <div className="text-center py-20 px-3">
-          <span className="material-symbols-outlined text-6xl text-outline mb-4">
-            {tab === 'favorites' ? 'favorite_border' : 'history'}
+          <span className="text-5xl">
+            {tab === 'favorites' ? '🤍' : '🕐'}
           </span>
           <p className="text-sm text-on-surface-variant mb-4">
             {tab === 'favorites' ? '还没有收藏任何穿搭' : '暂无浏览记录'}
@@ -81,9 +81,7 @@ export default function FavoritesPage() {
                         <button onClick={(e) => {
                           e.stopPropagation()
                           dispatch({ type: 'TOGGLE_FAVORITE', outfitId: outfit.id })
-                        }} className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
-                          favorite
-                        </button>
+                        }} className="text-primary text-lg">❤️</button>
                       )}
                     </div>
                   </div>

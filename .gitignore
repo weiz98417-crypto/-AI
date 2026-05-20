@@ -9,3 +9,5 @@ extracted_admin/
 extracted_user/
 openspec/
 .claude/
+
+.vercel

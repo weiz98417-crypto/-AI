@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useEffect, type ReactNode, type Dispatch } from 'react'
-import type { DashboardMetrics, ManagedOutfit } from '@ggai/shared/types'
+import type { DashboardMetrics, ManagedOutfit } from '../shared/types'
 import { seedMetrics, seedAnalytics, seedManagedOutfits } from './seedData'
 
 // ---- State ----

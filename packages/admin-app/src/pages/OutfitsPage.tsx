@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAdmin } from '../store/AdminContext'
-import { PRICE_RANGE_MAP } from '@ggai/shared/types'
+import { PRICE_RANGE_MAP } from '../shared/types'
 
 export default function OutfitsPage() {
   const { state, dispatch } = useAdmin()

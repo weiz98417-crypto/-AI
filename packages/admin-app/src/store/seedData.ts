@@ -1,4 +1,4 @@
-import type { DashboardMetrics, ManagedOutfit } from '@ggai/shared/types'
+import type { DashboardMetrics, ManagedOutfit } from '../shared/types'
 
 export const seedMetrics: DashboardMetrics = {
   todayRevenue: 12580,

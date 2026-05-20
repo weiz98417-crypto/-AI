@@ -1,6 +1,5 @@
 {
-  "buildCommand": "pnpm -F @ggai/admin-app build",
+  "buildCommand": "npx vite build",
   "outputDirectory": "dist",
-  "installCommand": "pnpm install",
-  "framework": "vite"
+  "framework": null
 }

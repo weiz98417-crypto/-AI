@@ -13,7 +13,7 @@ function AdminLayout() {
       <Sidebar />
       <main className="ml-[260px] min-h-screen flex flex-col">
         <AdminTopBar />
-        <div className="flex-1 p-8 max-w-[1440px] w-full">
+        <div className="flex-1 pt-24 pb-12 px-8 max-w-[1440px] w-full">
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />

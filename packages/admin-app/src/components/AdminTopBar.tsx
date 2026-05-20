@@ -1,6 +1,6 @@
 export default function AdminTopBar() {
   return (
-    <header className="h-16 flex justify-between items-center px-8 w-full z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20 sticky top-0">
+    <header className="fixed top-0 right-0 left-[260px] h-16 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20 flex justify-between items-center px-8 z-40">
       <div className="flex items-center flex-1 max-w-xl">
         <div className="relative w-full group">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm pointer-events-none select-none">⌕</span>

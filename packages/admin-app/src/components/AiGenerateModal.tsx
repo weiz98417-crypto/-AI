@@ -9,9 +9,9 @@ interface Props {
 type Message = { role: 'ai' | 'user'; text: string }
 
 const QUESTIONS = [
-  '你好！我是逛逛AI造型师 ✨ 先告诉我，你想要什么场合的穿搭？\n\n上班通勤 / 客户会议 / 周末约会 / 闺蜜聚会',
-  '明白了！那你偏爱什么色系呢？\n\n暖色调（粉/米/棕）/ 冷色调（蓝/灰/黑）/ 中性色 / 亮色',
-  '最后，你的预算大概在什么范围？\n\n¥500以下 / ¥500-1500 / ¥1500以上 / 不限',
+  '你好！我是逛逛AI内容助手。来帮你的平台创建新的穿搭推荐。\n\n首先，这次面向什么目标客群？\n\n职场新人 / 资深白领 / 学生群体 / 高端用户 / 不限',
+  '好的。你希望推荐什么季节或场景的穿搭？\n\n春季通勤 / 夏季约会 / 秋冬商务 / 闺蜜聚会 / 不限',
+  '定价定位在哪个档位？\n\n平价亲民 (¥200↓) / 中端轻奢 (¥200-800) / 高端精品 (¥800+) / 不限',
 ]
 
 export default function AiGenerateModal({ onClose, onAdd }: Props) {
@@ -44,10 +44,10 @@ export default function AiGenerateModal({ onClose, onAdd }: Props) {
     } else {
       // All questions answered — call DeepSeek
       setLoading(true)
-      setMessages(prev => [...prev, { role: 'ai', text: '好的，我已经了解了你的需求。让我为你生成专属穿搭方案...' }])
+      setMessages(prev => [...prev, { role: 'ai', text: '收到。正在根据你的客群和市场定位生成穿搭方案...' }])
 
       try {
-        const system = `你是逛逛AI的穿搭设计师。根据用户的回答和场合，生成一套完整的穿搭方案。必须严格返回JSON：
+        const system = `你是逛逛AI平台的内容运营助手。你的任务是根据运营人员提供的目标客群、场景和定价策略，生成一套适合发布到平台的穿搭推荐方案。返回JSON：
 {
   "name": "穿搭名称（中文，10字以内）",
   "items": [{"name": "单品名", "brand": "品牌名", "price": 数字, "category": "top|bottom|outerwear|dress|shoes|accessory"}],
@@ -55,14 +55,14 @@ export default function AiGenerateModal({ onClose, onAdd }: Props) {
   "totalPrice": 数字,
   "brandSummary": "品牌摘要"
 }
-生成3-4个单品，总价合理（200-3000），风格标签2个。`
+单品3-4个，价格合理，风格标签2个。`
 
-        const user = `用户回答：
-1. 场合偏好：${newAnswers[0]}
-2. 色系偏好：${newAnswers[1]}
-3. 预算范围：${newAnswers[2]}
+        const user = `运营需求：
+1. 目标客群：${newAnswers[0]}
+2. 场景季节：${newAnswers[1]}
+3. 定价策略：${newAnswers[2]}
 
-请根据以上信息生成一套穿搭方案。`
+请生成一套穿搭方案。`
 
         const res = await fetch('/api/ai', {
           method: 'POST',
@@ -72,15 +72,20 @@ export default function AiGenerateModal({ onClose, onAdd }: Props) {
         const data = await res.json()
         const text = data.text || ''
 
-        // Parse JSON from response
         const jsonMatch = text.match(/\{[\s\S]*\}/)
         if (jsonMatch) {
           const parsed = JSON.parse(jsonMatch[0])
+          const occasionMap: Record<string, string> = {
+            '通勤': 'work-commute', '职场': 'work-commute', '商务': 'client-meeting',
+            '会议': 'client-meeting', '约会': 'weekend-date', '闺蜜': 'girls-gathering',
+          }
+          let occasion = 'work-commute'
+          for (const [k, v] of Object.entries(occasionMap)) {
+            if (newAnswers[1].includes(k)) { occasion = v; break }
+          }
           const outfit: ManagedOutfit = {
             id: `ai-${Date.now()}`,
-            occasion: answers[0].includes('上班') ? 'work-commute' :
-                       answers[0].includes('会议') ? 'client-meeting' :
-                       answers[0].includes('约会') ? 'weekend-date' : 'girls-gathering',
+            occasion: occasion as ManagedOutfit['occasion'],
             name: parsed.name || 'AI推荐穿搭',
             items: parsed.items || [],
             totalPrice: parsed.totalPrice || 888,
@@ -112,8 +117,8 @@ export default function AiGenerateModal({ onClose, onAdd }: Props) {
         {/* Header */}
         <div className="flex justify-between items-center p-5 border-b border-outline-variant/20 shrink-0">
           <div>
-            <h2 className="text-base font-bold text-on-surface">AI 造型师</h2>
-            <p className="text-xs text-secondary">回答几个问题，为你定制穿搭</p>
+            <h2 className="text-base font-bold text-on-surface">AI 内容助手</h2>
+            <p className="text-xs text-secondary">回答运营问题，生成平台穿搭内容</p>
           </div>
           <button onClick={onClose} className="text-secondary hover:text-primary text-xl leading-none">×</button>
         </div>

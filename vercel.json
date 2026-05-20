@@ -1,6 +1,5 @@
 {
   "buildCommand": "pnpm -F @ggai/user-app build",
   "outputDirectory": "packages/user-app/dist",
-  "installCommand": "pnpm install",
-  "framework": "vite"
+  "installCommand": "pnpm install"
 }

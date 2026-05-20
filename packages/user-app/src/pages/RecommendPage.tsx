@@ -4,6 +4,7 @@ import { PRICE_RANGE_MAP } from '@ggai/shared/types'
 import type { Outfit } from '@ggai/shared/types'
 import { useApp } from '../store/AppContext'
 import { generateAiOutfitDescription, calculateAiScore } from '../store/aiEngine'
+import { getAiOutfitRecommendation } from '../store/deepseek'
 
 export default function RecommendPage() {
   const { occasion } = useParams<{ occasion: string }>()
@@ -25,6 +26,7 @@ export default function RecommendPage() {
 
   const [aiGenerating, setAiGenerating] = useState(false)
   const [aiGeneratedId, setAiGeneratedId] = useState<string | null>(null)
+  const [aiText, setAiText] = useState('')
 
   const handleOutfitClick = (outfit: Outfit) => {
     setExpandedId(expandedId === outfit.id ? null : outfit.id)
@@ -34,18 +36,34 @@ export default function RecommendPage() {
   const handleAiGenerate = useCallback(() => {
     setAiGenerating(true)
     setAiGeneratedId(null)
-    setTimeout(() => {
-      // Pick the best-scoring outfit for current occasion
-      const scored = filteredOutfits
-        .map((o) => ({ o, score: calculateAiScore(o, state.preferences) }))
-        .sort((a, b) => b.score - a.score)
-      if (scored.length > 0) {
-        setAiGeneratedId(scored[0].o.id)
-        setExpandedId(scored[0].o.id)
-      }
-      setAiGenerating(false)
-    }, 2000)
-  }, [filteredOutfits, state.preferences])
+    setAiText('')
+    const occasionOutfits = state.outfits.filter((o) => o.occasion === occasion)
+    // Call DeepSeek for real AI recommendation
+    getAiOutfitRecommendation(currentOccasion?.name || occasion || '', state.preferences, occasionOutfits)
+      .then((text) => {
+        setAiText(text)
+        // Also pick best scored outfit locally
+        const scored = occasionOutfits
+          .map((o) => ({ o, score: calculateAiScore(o, state.preferences) }))
+          .sort((a, b) => b.score - a.score)
+        if (scored.length > 0) {
+          setAiGeneratedId(scored[0].o.id)
+          setExpandedId(scored[0].o.id)
+        }
+        setAiGenerating(false)
+      })
+      .catch(() => {
+        // Fallback to local scoring
+        const scored = occasionOutfits
+          .map((o) => ({ o, score: calculateAiScore(o, state.preferences) }))
+          .sort((a, b) => b.score - a.score)
+        if (scored.length > 0) {
+          setAiGeneratedId(scored[0].o.id)
+          setExpandedId(scored[0].o.id)
+        }
+        setAiGenerating(false)
+      })
+  }, [state.outfits, state.preferences, occasion, currentOccasion])
 
   return (
     <div className="min-h-screen bg-background pb-32">
@@ -109,14 +127,19 @@ export default function RecommendPage() {
         </div>
 
         {aiGeneratedId && (
-          <div className="bg-primary-fixed/30 border border-primary/20 rounded-xl p-3 mb-4 text-sm">
-            <span className="text-primary font-semibold">🤖 AI Pick: </span>
-            <span className="text-on-surface">
-              {state.outfits.find((o) => o.id === aiGeneratedId)?.name}
-            </span>
-            <span className="text-primary font-bold ml-1">
-              {calculateAiScore(state.outfits.find((o) => o.id === aiGeneratedId)!, state.preferences)}% match
-            </span>
+          <div className="bg-primary-fixed/30 border border-primary/20 rounded-xl p-3 mb-4">
+            <div className="text-sm mb-1">
+              <span className="text-primary font-semibold">🤖 DeepSeek AI Pick: </span>
+              <span className="text-on-surface">
+                {state.outfits.find((o) => o.id === aiGeneratedId)?.name}
+              </span>
+              <span className="text-primary font-bold ml-1">
+                {calculateAiScore(state.outfits.find((o) => o.id === aiGeneratedId)!, state.preferences)}% match
+              </span>
+            </div>
+            {aiText && (
+              <p className="text-sm text-on-surface leading-relaxed mt-2 pt-2 border-t border-primary/20 whitespace-pre-line">{aiText}</p>
+            )}
           </div>
         )}
 

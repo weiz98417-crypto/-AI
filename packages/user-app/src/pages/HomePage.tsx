@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../store/AppContext'
 import { outfitImages } from '../assets/images'
 import { aiRecommend, getAiThinkingPhrases } from '../store/aiEngine'
+import { getAiOutfitRecommendation } from '../store/deepseek'
 import SearchBar from '../components/SearchBar'
 
 export default function HomePage() {
@@ -11,6 +12,7 @@ export default function HomePage() {
   const [aiThinking, setAiThinking] = useState(true)
   const [thinkStep, setThinkStep] = useState(0)
   const [aiPicks, setAiPicks] = useState<ReturnType<typeof aiRecommend>>([])
+  const [aiAdvice, setAiAdvice] = useState('')
 
   const phrases = getAiThinkingPhrases()
 
@@ -25,6 +27,10 @@ export default function HomePage() {
             const picks = aiRecommend(state.outfits, 'work-commute', state.preferences, 3)
             setAiPicks(picks)
             setAiThinking(false)
+            // Call DeepSeek for real AI advice
+            getAiOutfitRecommendation('work-commute', state.preferences, state.outfits.filter(o => o.occasion === 'work-commute'))
+              .then(setAiAdvice)
+              .catch(() => setAiAdvice(''))
             return s
           }
           return s + 1
@@ -123,6 +129,12 @@ export default function HomePage() {
                 </div>
               )
             })}
+            {aiAdvice && (
+              <div className="mt-4 bg-primary-fixed/30 border border-primary/20 rounded-xl p-4">
+                <p className="text-xs font-semibold text-primary mb-1">🤖 DeepSeek AI 推荐语</p>
+                <p className="text-sm text-on-surface leading-relaxed whitespace-pre-line">{aiAdvice}</p>
+              </div>
+            )}
           </div>
         )}
       </section>

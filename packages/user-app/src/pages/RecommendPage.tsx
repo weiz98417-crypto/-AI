@@ -129,7 +129,7 @@ export default function RecommendPage() {
         {aiGeneratedId && (
           <div className="bg-primary-fixed/30 border border-primary/20 rounded-xl p-3 mb-4">
             <div className="text-sm mb-1">
-              <span className="text-primary font-semibold">🤖 DeepSeek AI Pick: </span>
+              <span className="text-primary font-semibold">🤖 逛逛AI Pick: </span>
               <span className="text-on-surface">
                 {state.outfits.find((o) => o.id === aiGeneratedId)?.name}
               </span>

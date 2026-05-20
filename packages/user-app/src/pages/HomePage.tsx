@@ -131,7 +131,7 @@ export default function HomePage() {
             })}
             {aiAdvice && (
               <div className="mt-4 bg-primary-fixed/30 border border-primary/20 rounded-xl p-4">
-                <p className="text-xs font-semibold text-primary mb-1">🤖 DeepSeek AI 推荐语</p>
+                <p className="text-xs font-semibold text-primary mb-1">🤖 逛逛AI 推荐语</p>
                 <p className="text-sm text-on-surface leading-relaxed whitespace-pre-line">{aiAdvice}</p>
               </div>
             )}

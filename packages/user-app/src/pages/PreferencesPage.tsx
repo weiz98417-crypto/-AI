@@ -50,7 +50,7 @@ export default function PreferencesPage() {
 
       <main className="pt-14 px-3">
         {/* Hero */}
-        <div className="rounded-xl overflow-hidden relative h-32 mb-4 bg-gradient-to-br from-primary-container/80 to-primary-fixed/60">
+        <div className="rounded-xl overflow-hidden relative h-32 mb-4 bg-gradient-to-br from-primary-container/80 via-primary-fixed/60 to-primary-container/80 gradient-animate">
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent flex items-end p-4">
             <div>
               <p className="text-xs text-white/80 font-semibold">定制你的专属风格</p>
@@ -88,8 +88,8 @@ export default function PreferencesPage() {
               const selected = prefs.priceTier === tier.value
               return (
                 <button key={tier.value} onClick={() => setPrefs((p) => ({ ...p, priceTier: tier.value }))}
-                  className={`w-full flex items-center justify-between p-4 rounded-xl border text-left active:scale-[0.98] transition-transform ${
-                    selected ? 'border-primary bg-primary-container/5' : 'border-outline-variant bg-surface-container-lowest'
+                  className={`w-full flex items-center justify-between p-4 rounded-xl border text-left active:scale-[0.98] transition-all hover:shadow-sm ${
+                    selected ? 'border-primary bg-primary-container/5 shadow-sm' : 'border-outline-variant bg-surface-container-lowest hover:border-primary/30 hover:translate-x-1'
                   }`}>
                   <div>
                     <div className="text-sm font-bold text-on-surface">{tier.label}</div>
@@ -121,7 +121,7 @@ export default function PreferencesPage() {
         </section>
 
         {saved && (
-          <div className="mt-6 bg-primary-container/20 border border-primary/30 rounded-xl p-4 text-center">
+          <div className="mt-6 bg-primary-container/20 border border-primary/30 rounded-xl p-4 text-center animate-scale-in">
             <p className="text-primary font-semibold text-sm">✨ 已保存！AI 将根据你的偏好为你精准推荐穿搭</p>
           </div>
         )}

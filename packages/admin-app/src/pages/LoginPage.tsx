@@ -13,13 +13,16 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface-container-low">
-      <div className="w-full max-w-sm bg-surface rounded-2xl shadow-lg p-8">
-        <h1 className="text-2xl font-extrabold text-center mb-2">
-          <span className="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-            逛逛AI
-          </span>
-        </h1>
-        <p className="text-sm text-on-surface-variant text-center mb-8">后台管理系统</p>
+      <div className="w-full max-w-sm bg-surface rounded-2xl shadow-lg p-8 animate-float animate-fade-in-up">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-light mx-auto mb-4 flex items-center justify-center shadow-lg shadow-primary/20">
+            <span className="text-white text-2xl font-extrabold">逛</span>
+          </div>
+          <h1 className="text-2xl font-extrabold">
+            <span className="gradient-text">逛逛AI</span>
+          </h1>
+          <p className="text-sm text-on-surface-variant mt-1">后台管理系统</p>
+        </div>
 
         <form onSubmit={handleLogin}>
           <div className="mb-4">
@@ -50,7 +53,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-primary text-on-primary rounded-xl font-semibold active:scale-95 transition-transform"
+            className="w-full py-3 bg-primary text-on-primary rounded-xl font-semibold active:scale-95 transition-all hover:shadow-lg hover:shadow-primary/20 hover:brightness-110"
           >
             登录
           </button>

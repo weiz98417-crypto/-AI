@@ -11,14 +11,14 @@ export default function BottomNavBar() {
   const location = useLocation()
 
   return (
-    <nav className="fixed bottom-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant/50 flex justify-around items-center h-16 pb-safe">
+    <nav className="fixed bottom-0 w-full z-50 glass-nav border-t-0 border-t border-outline-variant/30 flex justify-around items-center h-16 pb-safe">
       {TABS.map((tab) => {
         const isActive = location.pathname === tab.path
         return (
           <button
             key={tab.path}
             onClick={() => navigate(tab.path)}
-            className={`flex flex-col items-center justify-center gap-0.5 active:scale-95 transition-transform min-w-[64px] py-1 ${
+            className={`flex flex-col items-center justify-center gap-0.5 active:scale-95 transition-all min-w-[64px] py-1 ${
               isActive ? 'text-primary' : 'text-secondary'
             }`}
           >

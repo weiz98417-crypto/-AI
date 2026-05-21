@@ -19,7 +19,7 @@ export default function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 h-full w-[260px] bg-surface border-r border-outline-variant/20 flex flex-col py-6 z-50">
       <div className="px-6 mb-8">
-        <h1 className="text-[28px] font-bold text-primary leading-tight">GuangGuangAI</h1>
+        <h1 className="text-[28px] font-bold leading-tight gradient-text">GuangGuangAI</h1>
         <p className="text-xs text-secondary uppercase tracking-widest mt-1 font-semibold">Admin Console</p>
       </div>
 
@@ -30,13 +30,13 @@ export default function Sidebar() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`w-full flex items-center gap-3 py-3 px-6 text-left text-sm transition-all ${
+              className={`w-full flex items-center gap-3 py-3 px-6 text-left text-sm transition-all duration-300 ${
                 active
-                  ? 'bg-surface-container text-on-surface rounded-r-full border-l-4 border-primary font-semibold'
-                  : 'text-secondary hover:text-primary hover:bg-surface-container-low'
+                  ? 'bg-surface-container text-on-surface rounded-r-full border-l-4 border-primary font-semibold shadow-sm'
+                  : 'text-secondary hover:text-primary hover:bg-surface-container-low hover:translate-x-1'
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-primary' : 'bg-outline-variant'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${active ? 'bg-primary scale-125 shadow-sm shadow-primary/30' : 'bg-outline-variant group-hover:scale-125 group-hover:bg-primary/40'}`} />
               <span>{item.label}</span>
             </button>
           )
@@ -46,7 +46,7 @@ export default function Sidebar() {
       <div className="mt-auto px-6 space-y-3">
         <button
           onClick={() => setShowAiModal(true)}
-          className="w-full bg-primary-container text-on-primary-container py-3 px-4 rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity text-center"
+          className="w-full bg-primary-container text-on-primary-container py-3 px-4 rounded-xl font-semibold text-sm hover:opacity-90 transition-all text-center btn-glow hover:shadow-md hover:scale-[1.02]"
         >
           + 新建推荐
         </button>

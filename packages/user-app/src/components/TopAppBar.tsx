@@ -10,7 +10,7 @@ export default function TopAppBar({ title, showBack = true, rightAction }: Props
   const navigate = useNavigate()
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-background flex items-center justify-between px-3 h-12">
+    <header className="fixed top-0 w-full z-50 glass-nav flex items-center justify-between px-3 h-12">
       <div className="flex items-center gap-2 w-10">
         {showBack && (
           <button onClick={() => navigate(-1)} className="active:opacity-70 text-primary text-xl">

@@ -126,8 +126,8 @@ export default function AiGenerateModal({ onClose, onAdd }: Props) {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {messages.map((m, i) => (
-            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`} style={{ animation: `slideUp 0.35s ease-out ${i * 0.05}s both` }}>
+              <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
                 m.role === 'user'
                   ? 'bg-primary text-white'
                   : 'bg-surface-container-low text-on-surface'
@@ -137,12 +137,12 @@ export default function AiGenerateModal({ onClose, onAdd }: Props) {
             </div>
           ))}
           {loading && (
-            <div className="flex justify-start">
+            <div className="flex justify-start" style={{ animation: 'slideUp 0.3s ease-out both' }}>
               <div className="bg-surface-container-low rounded-2xl px-4 py-3">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="flex gap-1.5 items-end h-6">
+                  <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function AiGenerateModal({ onClose, onAdd }: Props) {
             <button
               onClick={handleSend}
               disabled={!input.trim()}
-              className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold disabled:opacity-40 active:scale-95 transition-all"
+              className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold disabled:opacity-40 active:scale-95 transition-all hover:shadow-md hover:shadow-primary/20 hover:brightness-105"
             >发送</button>
           </div>
         )}

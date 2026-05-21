@@ -1,5 +1,8 @@
 {
-  "buildCommand": "pnpm -F @ggai/user-app build",
+  "buildCommand": "cd ../.. && pnpm install --no-frozen-lockfile && pnpm -F @ggai/user-app build",
   "outputDirectory": "dist",
-  "framework": "vite"
+  "installCommand": "",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

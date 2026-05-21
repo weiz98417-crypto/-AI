@@ -51,17 +51,17 @@ export default function HomePage() {
       <section className="mb-5">
         <div className="px-3 flex justify-between items-end mb-2">
           <h2 className="text-[20px] font-bold text-on-surface">Occasion Quick Pick</h2>
-          <span className="text-xs font-semibold text-primary">View All</span>
+          <span className="text-xs font-semibold text-primary hover:underline cursor-pointer">View All</span>
         </div>
         <div className="flex overflow-x-auto hide-scrollbar gap-3 px-3">
-          {state.occasions.map((o) => (
-            <div key={o.id} className="flex-shrink-0 w-40">
+          {state.occasions.map((o, idx) => (
+            <div key={o.id} className="flex-shrink-0 w-40" style={{ animation: `fadeInUp 0.4s ease-out ${idx * 0.1}s both` }}>
               <button
                 onClick={() => navigate(`/recommend/${o.id}`)}
-                className="relative h-56 rounded-xl overflow-hidden mb-2 w-full active:scale-[0.98] transition-transform"
+                className="relative h-56 rounded-xl overflow-hidden mb-2 w-full active:scale-[0.98] transition-all duration-300 shadow-sm hover:shadow-lg group img-zoom"
               >
                 <img src={outfitImages[`${o.id}-card`]} alt={o.name} className="w-full h-full object-cover" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all group-hover:from-black/70">
                   <p className="text-xs font-semibold text-white">{o.name}</p>
                 </div>
               </button>
@@ -75,13 +75,13 @@ export default function HomePage() {
       <section className="px-3">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-[20px] font-bold text-on-surface">AI Curated For You</h2>
-          <span className="text-sm">✨</span>
+          <span className="text-sm animate-sparkle inline-block">✨</span>
         </div>
 
         {aiThinking ? (
-          <div className="bg-surface-container-lowest rounded-2xl border border-primary/20 p-6 shadow-sm">
+          <div className="bg-surface-container-lowest rounded-2xl border border-primary/20 p-6 shadow-sm animate-fade-in-up">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center animate-pulse text-lg">✨</div>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary-container/40 flex items-center justify-center text-lg animate-float">✨</div>
               <div>
                 <p className="text-sm font-semibold text-primary">AI Engine Running</p>
                 <p className="text-xs text-on-surface-variant">{phrases[thinkStep] || 'Generating...'}</p>
@@ -90,19 +90,19 @@ export default function HomePage() {
             <div className="space-y-2">
               {phrases.slice(0, thinkStep + 1).map((p, i) => (
                 <div key={i} className="flex items-center gap-2 text-xs text-on-surface-variant">
-                  <span className="text-primary">✓</span>
-                  <span className={i === thinkStep ? 'animate-pulse font-semibold text-on-surface' : ''}>{p}</span>
+                  <span className="text-primary" style={{ animation: `scaleIn 0.3s ease-out ${i * 0.1}s both` }}>✓</span>
+                  <span className={i === thinkStep ? 'font-semibold text-on-surface' : ''}>{p}</span>
                 </div>
               ))}
             </div>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-3 stagger-container">
             {aiPicks.map(({ outfit, score }) => {
               const barColor = score >= 90 ? 'bg-green-500' : score >= 80 ? 'bg-primary' : 'bg-yellow-500'
               return (
                 <div key={outfit.id}
-                  className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden shadow-sm flex active:opacity-80 cursor-pointer"
+                  className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden shadow-sm flex active:opacity-80 cursor-pointer card-lift"
                   onClick={() => navigate(`/recommend/${outfit.occasion}`)}
                 >
                   <div className="w-[33%] aspect-[3/4]">
@@ -130,7 +130,7 @@ export default function HomePage() {
               )
             })}
             {aiAdvice && (
-              <div className="mt-4 bg-primary-fixed/30 border border-primary/20 rounded-xl p-4">
+              <div className="mt-4 bg-primary-fixed/30 border border-primary/20 rounded-xl p-4 animate-fade-in-up">
                 <p className="text-xs font-semibold text-primary mb-1">✨ 逛逛AI 推荐语</p>
                 <p className="text-sm text-on-surface leading-relaxed whitespace-pre-line">{aiAdvice}</p>
               </div>

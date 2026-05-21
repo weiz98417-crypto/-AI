@@ -85,8 +85,8 @@ export default function RecommendPage() {
                 <button
                   key={o.id}
                   onClick={() => navigate(`/recommend/${o.id}`)}
-                  className={`whitespace-nowrap px-4 py-1.5 rounded-full text-[11px] font-semibold transition-colors ${
-                    o.id === occasion ? 'bg-primary text-on-primary shadow-sm' : 'bg-surface-container-low text-secondary'
+                  className={`whitespace-nowrap px-4 py-1.5 rounded-full text-[11px] font-semibold transition-all hover:-translate-y-0.5 ${
+                    o.id === occasion ? 'bg-primary text-on-primary shadow-sm' : 'bg-surface-container-low text-secondary hover:shadow-sm'
                   }`}
                 >
                   {o.name}
@@ -118,7 +118,7 @@ export default function RecommendPage() {
             className={`w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
               aiGenerating
                 ? 'bg-primary/20 text-primary animate-pulse'
-                : 'bg-gradient-to-r from-primary to-primary-light text-white shadow-md active:scale-[0.98]'
+                : 'bg-gradient-to-r from-primary to-primary-light text-white shadow-md active:scale-[0.98] btn-shimmer'
             }`}
           >
             <span className="text-lg">{aiGenerating ? '🔄' : '✨'}</span>
@@ -155,7 +155,7 @@ export default function RecommendPage() {
               const isFav = state.favorites.includes(outfit.id)
               const isExpanded = expandedId === outfit.id
               return (
-                <div key={outfit.id} className="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant shadow-sm">
+                <div key={outfit.id} className="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant shadow-sm card-lift img-zoom">
                   {/* Main Image */}
                   <div className="relative aspect-[3/4] bg-surface-variant" onClick={() => handleOutfitClick(outfit)}>
                     <img src={outfit.coverImage} alt={outfit.name} className="w-full h-full object-cover" />

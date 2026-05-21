@@ -39,6 +39,7 @@ export default function FavoritesPage() {
       </div>
 
       {/* Content */}
+      <div className="animate-fade-in-up">
       {items.length === 0 ? (
         <div className="text-center py-20 px-3">
           <span className="text-5xl">
@@ -53,12 +54,12 @@ export default function FavoritesPage() {
           </button>
         </div>
       ) : (
-        <div className="px-3 flex flex-col gap-3">
+        <div className="px-3 flex flex-col gap-3 stagger-container">
           {items.map((outfit) => {
             const entry = state.browsingHistory.find((e) => e.outfitId === outfit.id)
             return (
               <div key={outfit.id}
-                className="bg-surface-container-lowest rounded-xl p-4 flex gap-4 border border-outline-variant/50 shadow-sm active:opacity-80 cursor-pointer"
+                className="bg-surface-container-lowest rounded-xl p-4 flex gap-4 border border-outline-variant/50 shadow-sm active:opacity-80 cursor-pointer card-lift"
                 onClick={() => navigate(`/recommend/${outfit.occasion}`)}
               >
                 <div className="w-20 h-24 rounded-lg overflow-hidden flex-shrink-0">
@@ -81,7 +82,7 @@ export default function FavoritesPage() {
                         <button onClick={(e) => {
                           e.stopPropagation()
                           dispatch({ type: 'TOGGLE_FAVORITE', outfitId: outfit.id })
-                        }} className="text-primary text-lg">❤️</button>
+                        }} className="text-primary text-lg heart-beat">❤️</button>
                       )}
                     </div>
                   </div>
@@ -91,6 +92,7 @@ export default function FavoritesPage() {
           })}
         </div>
       )}
+      </div>
     </>
   )
 }

@@ -66,7 +66,7 @@ export default function OutfitsPage() {
   const paged = outfits.slice((page - 1) * perPage, page * perPage)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in-up">
       {/* Header */}
       <div className="flex justify-between items-end">
         <div>
@@ -129,7 +129,7 @@ export default function OutfitsPage() {
           { label: '平均点击率', value: '8.5%', dot: 'bg-tertiary' },
           { label: '总曝光', value: '42.5k', dot: 'bg-red-400' },
         ].map((s) => (
-          <div key={s.label} className="bg-surface p-5 rounded-2xl border border-outline-variant/20 hover:border-primary/40 transition-all">
+          <div key={s.label} className="bg-surface p-5 rounded-2xl border border-outline-variant/20 hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-default">
             <div className="flex items-center justify-between mb-3">
               <span className={`w-3 h-3 rounded-full ${s.dot} inline-block`} />
             </div>
@@ -159,7 +159,7 @@ export default function OutfitsPage() {
                 const ctr = CTR_VALUES[outfit.id] || 50
                 const barColor = ctr >= 80 ? 'bg-primary' : ctr >= 60 ? 'bg-primary/60' : 'bg-primary/30'
                 return (
-                  <tr key={outfit.id} className="hover:bg-surface-container-low transition-colors group">
+                  <tr key={outfit.id} className="hover:bg-surface-container-low hover:shadow-sm transition-all group border-l-4 border-l-transparent hover:border-l-primary/30">
                     <td className="px-6 py-4">
                       <div className="w-12 h-16 rounded-lg bg-surface-container overflow-hidden border border-outline-variant/20">
                         <img src={outfit.coverImage} alt={outfit.name} className="w-full h-full object-cover" />
@@ -221,21 +221,21 @@ export default function OutfitsPage() {
             <button
               onClick={() => setPage(Math.max(1, page - 1))}
               disabled={page === 1}
-              className="p-1.5 text-secondary hover:bg-primary/10 rounded-lg disabled:opacity-30 text-sm"
+              className="p-1.5 text-secondary hover:bg-primary/10 hover:text-primary rounded-lg disabled:opacity-30 text-sm transition-all"
             >◀</button>
             {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
               <button
                 key={p}
                 onClick={() => setPage(p)}
                 className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-semibold ${
-                  p === page ? 'bg-primary text-white' : 'text-secondary hover:bg-primary/10'
+                  p === page ? 'bg-primary text-white shadow-sm' : 'text-secondary hover:bg-primary/10 hover:text-primary transition-all'
                 }`}
               >{p}</button>
             ))}
             <button
               onClick={() => setPage(Math.min(pages, page + 1))}
               disabled={page === pages}
-              className="p-1.5 text-secondary hover:bg-primary/10 rounded-lg disabled:opacity-30 text-sm"
+              className="p-1.5 text-secondary hover:bg-primary/10 hover:text-primary rounded-lg disabled:opacity-30 text-sm transition-all"
             >▶</button>
           </div>
         </div>

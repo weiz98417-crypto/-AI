@@ -242,7 +242,7 @@ export default function SharePage() {
         </div>
 
         {/* Canvas */}
-        <canvas ref={canvasRef} className="rounded-xl shadow-lg w-full max-w-[375px]" />
+        <canvas ref={canvasRef} className="rounded-xl shadow-lg w-full max-w-[375px] animate-fade-in-up" />
 
         {/* Tips */}
         {ready && (
@@ -253,7 +253,7 @@ export default function SharePage() {
       {ready && !error && (
         <footer className="fixed bottom-0 w-full bg-surface-container-lowest/90 backdrop-blur-md border-t border-outline-variant p-3">
           <button onClick={handleDownload}
-            className="w-full py-4 bg-primary text-on-primary rounded-xl text-base font-bold active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+            className="w-full py-4 bg-primary text-on-primary rounded-xl text-base font-bold active:scale-[0.98] transition-all hover:shadow-lg hover:shadow-primary/20 flex items-center justify-center gap-2">
             💾 保存图片到相册
           </button>
         </footer>

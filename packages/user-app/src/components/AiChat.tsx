@@ -23,6 +23,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
   const [thinkingText, setThinkingText] = useState('')
   const [result, setResult] = useState<RecommendationResult | null>(null)
   const [collapsed, setCollapsed] = useState(false)
+  const [showCamera, setShowCamera] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -180,7 +181,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
 
       {/* Input Area */}
       {!result && (
-        <div className="p-4 border-t border-outline-variant/20 shrink-0 space-y-2 bg-white/50">
+        <div className="p-4 border-t border-outline-variant/20 shrink-0 space-y-2 bg-white/50 relative">
           {/* Quick replies */}
           {messages.length <= 2 && (
             <div className="flex flex-wrap gap-1.5">
@@ -195,6 +196,13 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
             </div>
           )}
           <div className="flex gap-2">
+            <button
+              onClick={() => setShowCamera(true)}
+              disabled={loading}
+              className="w-10 h-10 rounded-xl bg-surface-container-low border border-outline-variant/30 text-secondary flex items-center justify-center shrink-0 hover:border-primary hover:text-primary transition-colors active:scale-90"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M23 7l-3-3h-5l-1-2H10L9 4H4L1 7v13a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7z"/><circle cx="12" cy="14" r="4"/></svg>
+            </button>
             <input
               ref={inputRef}
               value={input}
@@ -210,6 +218,32 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
               className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center disabled:opacity-40 active:scale-90 transition-all hover:shadow-md hover:shadow-primary/20 shrink-0"
             ><IconSend size={16} /></button>
           </div>
+
+          {/* Camera Permission Mock */}
+          {showCamera && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowCamera(false)}>
+              <div className="bg-surface rounded-2xl p-6 shadow-2xl border border-outline-variant/20 mx-8 text-center" onClick={e => e.stopPropagation()}>
+                <div className="text-4xl mb-3">📸</div>
+                <h3 className="text-base font-bold mb-1">需要相机权限</h3>
+                <p className="text-xs text-secondary mb-4">逛逛AI 需要访问你的相机来识别你的穿搭风格</p>
+                <div className="flex gap-3">
+                  <button onClick={() => setShowCamera(false)} className="flex-1 py-2 bg-surface-container text-on-surface rounded-lg text-sm font-semibold">拒绝</button>
+                  <button onClick={() => {
+                    setShowCamera(false); setThinkingText('正在分析你的穿搭照片...');
+                    setTimeout(() => {
+                      const ctx = state.outfits.filter(o => o.occasion === (occasion || 'work-commute')).slice(0, 2);
+                      const names = ctx.map(o => o.name).join('」和「');
+                      setMessages(prev => [...prev,
+                        { id: 'cam-u-' + Date.now(), role: 'user', text: '📸 拍照分析今日穿搭', timestamp: Date.now() },
+                        { id: 'cam-ai-' + Date.now(), role: 'ai', text: `我看到你的穿搭了！\n\n🔍 风格识别：${occasion ? '简约通勤' : '日常休闲'}风\n📊 搭配评分：87分\n\n💡 你的配色和廓形都不错。推荐尝试「${names}」，和你的风格会很搭！`, timestamp: Date.now() },
+                      ]);
+                      setThinkingText('');
+                    }, 1500);
+                  }} className="flex-1 py-2 bg-primary text-white rounded-lg text-sm font-semibold">允许</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

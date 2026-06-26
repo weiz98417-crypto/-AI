@@ -71,10 +71,10 @@ export default function HomePage() {
       {!showAiChat && !showAssistant && (
         <button
           onClick={() => setShowAssistant(true)}
-          className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-2xl bg-gradient-to-br from-tertiary to-tertiary-container text-white shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all animate-float"
+          className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-2xl bg-gradient-to-br from-tertiary to-tertiary-container text-white shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all animate-float text-2xl"
           style={{ boxShadow: '0 4px 20px rgba(66, 96, 133, 0.35)' }}
         >
-          <IconSparkle size={24} />
+          ✨
         </button>
       )}
 

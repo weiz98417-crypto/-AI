@@ -1,8 +1,5 @@
-import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAdmin } from '../store/AdminContext'
-import type { ManagedOutfit } from '../shared/types'
-import AiGenerateModal from './AiGenerateModal'
 
 const NAV = [
   { path: '/', label: '数据看板' },
@@ -18,7 +15,6 @@ export default function Sidebar() {
   const navigate = useNavigate()
   const location = useLocation()
   const { state, dispatch } = useAdmin()
-  const [showAiModal, setShowAiModal] = useState(false)
 
   return (
     <aside className="fixed left-0 top-0 h-full w-[260px] bg-surface border-r border-outline-variant/20 flex flex-col py-6 z-50">
@@ -48,12 +44,6 @@ export default function Sidebar() {
       </nav>
 
       <div className="mt-auto px-6 space-y-3">
-        <button
-          onClick={() => setShowAiModal(true)}
-          className="w-full bg-primary-container text-on-primary-container py-3 px-4 rounded-xl font-semibold text-sm hover:opacity-90 transition-all text-center btn-glow hover:shadow-md hover:scale-[1.02]"
-        >
-          + 新建推荐
-        </button>
         <div className="pt-4 border-t border-outline-variant/20">
           <button
             onClick={() => dispatch({ type: 'LOGOUT' })}
@@ -65,14 +55,6 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {showAiModal && (
-        <AiGenerateModal
-          onClose={() => setShowAiModal(false)}
-          onAdd={(outfit: ManagedOutfit) => {
-            dispatch({ type: 'ADD_OUTFIT', outfit })
-          }}
-        />
-      )}
     </aside>
   )
 }

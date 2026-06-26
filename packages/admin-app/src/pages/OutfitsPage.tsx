@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAdmin } from '../store/AdminContext'
 import { OUTFIT_IMAGE_POOL as IMG_POOL } from '../store/seedData'
 import type { ManagedOutfit } from '../shared/types'
+import ImageUploader from '../components/ImageUploader'
 
 const OCCASION_COLORS: Record<string, string> = {
   'work-commute': 'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant',
@@ -19,19 +20,10 @@ const OCCASION_LABELS: Record<string, string> = {
 
 const ALL_OCCASIONS = ['', 'work-commute', 'client-meeting', 'weekend-date', 'girls-gathering']
 
-function getDefaultImage(occasion: string): string {
-  const pool = IMG_POOL[occasion]
-  return pool ? pool[0] : '/assets/outfits/work-commute-1-main.jpg'
-}
-
 export default function OutfitsPage() {
   const { state, dispatch } = useAdmin()
   const [page, setPage] = useState(1)
   const [showForm, setShowForm] = useState(false)
-  const [newName, setNewName] = useState('')
-  const [newOccasion, setNewOccasion] = useState('work-commute')
-  const [newPrice, setNewPrice] = useState('')
-  const [newImage, setNewImage] = useState(getDefaultImage('work-commute'))
   const [filterOccasion, setFilterOccasion] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editName, setEditName] = useState('')
@@ -39,27 +31,49 @@ export default function OutfitsPage() {
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'status' | ''>('')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+
+  // New outfit form state
+  const [newName, setNewName] = useState('')
+  const [newOccasion, setNewOccasion] = useState('work-commute')
+  const [newStyleTags, setNewStyleTags] = useState<string[]>(['简约通勤'])
+  const [newImages, setNewImages] = useState<string[]>([])
+  const [newItems, setNewItems] = useState([{ name: '', brand: '', price: '', category: 'top' as const }])
   const perPage = 10
 
-  const handleOccasionChange = (occasion: string) => {
-    setNewOccasion(occasion)
-    setNewImage(getDefaultImage(occasion))
+  const ALL_STYLE_TAGS = ['简约通勤', '优雅知性', '潮流街头', '温柔甜美', '休闲舒适', '职业精英']
+
+  const addItem = () => setNewItems([...newItems, { name: '', brand: '', price: '', category: 'top' as const }])
+  const removeItem = (i: number) => newItems.length > 1 && setNewItems(newItems.filter((_, idx) => idx !== i))
+  const updateItem = (i: number, f: string, v: any) => {
+    const copy = [...newItems]; (copy[i] as any)[f] = v; setNewItems(copy)
+  }
+  const toggleTag = (t: string) => {
+    setNewStyleTags(prev => prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t])
   }
 
+  const totalPrice = newItems.reduce((s, it) => s + (parseInt(it.price) || 0), 0)
+  const brandSummary = newItems.filter(it => it.brand.trim()).map(it => it.brand.trim()).join(' + ') || '自定义品牌'
+  const priceRange = totalPrice > 2000 ? 'luxury' as const : totalPrice > 1000 ? 'premium' as const : totalPrice > 500 ? 'mid' as const : 'budget' as const
+
   const handleAdd = () => {
-    if (!newName.trim()) return
+    if (!newName.trim() || newItems.length === 0) return
     const id = `new-${Date.now()}`
-    const price = parseInt(newPrice) || 888
+    const items = newItems.filter(it => it.name.trim()).map(it => ({
+      name: it.name, brand: it.brand || '品牌', price: parseInt(it.price) || 0,
+      category: it.category, image: '/assets/outfits/placeholder.svg',
+    }))
+    const cover = newImages[0] || IMG_POOL[newOccasion]?.[0] || '/assets/outfits/work-commute-1-main.jpg'
     const outfit: ManagedOutfit = {
       id, occasion: newOccasion as ManagedOutfit['occasion'],
-      name: newName, items: [], totalPrice: price,
-      priceRange: price > 1000 ? 'premium' as const : price > 500 ? 'mid' as const : 'budget' as const,
-      styleTags: ['简约通勤'], coverImage: newImage,
-      brandSummary: '自定义品牌', active: true,
+      name: newName.trim(), items, totalPrice, priceRange,
+      styleTags: newStyleTags.length > 0 ? newStyleTags : ['简约通勤'],
+      coverImage: cover, brandSummary, active: true,
     }
     dispatch({ type: 'ADD_OUTFIT', outfit })
-    setNewName(''); setNewPrice(''); setShowForm(false); setPage(1)
-    setNewImage(getDefaultImage('work-commute'))
+    // Reset
+    setNewName(''); setNewOccasion('work-commute'); setNewStyleTags(['简约通勤'])
+    setNewImages([]); setNewItems([{ name: '', brand: '', price: '', category: 'top' as const }])
+    setShowForm(false); setPage(1)
   }
 
   const handleEdit = (outfit: ManagedOutfit) => {
@@ -113,8 +127,6 @@ export default function OutfitsPage() {
   const pages = Math.ceil(total / perPage)
   const paged = filtered.slice((page - 1) * perPage, page * perPage)
 
-  const occasionImages = IMG_POOL[newOccasion] || IMG_POOL['work-commute']
-
   return (
     <div className="space-y-6 animate-fade-in-up">
       {/* Header */}
@@ -143,52 +155,117 @@ export default function OutfitsPage() {
         </div>
       </div>
 
-      {/* Add Form */}
+      {/* Add Form — Full E-commerce Style */}
       {showForm && (
         <div className="bg-surface rounded-2xl border border-primary/30 p-6 shadow-sm">
-          <h3 className="text-sm font-bold mb-4 text-primary">新增穿搭方案</h3>
-          <div className="grid grid-cols-4 gap-4 mb-4">
-            <div>
-              <label className="block text-xs text-secondary mb-1 font-semibold">穿搭名称</label>
-              <input value={newName} onChange={e => setNewName(e.target.value)}
-                className="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none"
-                placeholder="如：春季通勤套装" />
-            </div>
-            <div>
-              <label className="block text-xs text-secondary mb-1 font-semibold">场合</label>
-              <select value={newOccasion} onChange={e => handleOccasionChange(e.target.value)}
-                className="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none cursor-pointer">
-                <option value="work-commute">上班通勤</option>
-                <option value="client-meeting">客户会议</option>
-                <option value="weekend-date">周末约会</option>
-                <option value="girls-gathering">闺蜜聚会</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-secondary mb-1 font-semibold">价格 (¥)</label>
-              <input value={newPrice} onChange={e => setNewPrice(e.target.value)}
-                className="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none"
-                placeholder="如：1280" type="number" />
-            </div>
-            <div>
-              <label className="block text-xs text-secondary mb-1 font-semibold">封面图片</label>
-              <div className="flex gap-2 items-center">
-                <select value={newImage} onChange={e => setNewImage(e.target.value)}
-                  className="flex-1 px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-xs focus:border-primary focus:outline-none cursor-pointer">
-                  {occasionImages.map(img => (
-                    <option key={img} value={img}>{img.split('/').pop()}</option>
-                  ))}
+          <h3 className="text-base font-bold mb-5 text-primary flex items-center gap-2">
+            <span className="w-1 h-5 bg-primary rounded-full" />
+            新增穿搭方案
+          </h3>
+
+          <div className="grid grid-cols-2 gap-6 mb-6">
+            {/* Left column: basic info */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-secondary mb-1 font-semibold">穿搭名称 *</label>
+                <input value={newName} onChange={e => setNewName(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none"
+                  placeholder="如：春季知性通勤套装" />
+              </div>
+              <div>
+                <label className="block text-xs text-secondary mb-1 font-semibold">适用场合 *</label>
+                <select value={newOccasion} onChange={e => setNewOccasion(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none cursor-pointer">
+                  <option value="work-commute">上班通勤</option>
+                  <option value="client-meeting">客户会议</option>
+                  <option value="weekend-date">周末约会</option>
+                  <option value="girls-gathering">闺蜜聚会</option>
                 </select>
-                <div className="w-10 h-12 rounded-lg bg-surface-container overflow-hidden border border-outline-variant/20 shrink-0">
-                  <img src={newImage} alt="preview" className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <label className="block text-xs text-secondary mb-1 font-semibold">风格标签</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {ALL_STYLE_TAGS.map(t => (
+                    <button key={t} onClick={() => toggleTag(t)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${newStyleTags.includes(t) ? 'bg-primary text-white shadow-sm' : 'bg-surface-container-low text-secondary hover:border-primary/40 border border-outline-variant/20'}`}
+                    >{t}</button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Preview card */}
+              <div className="bg-surface-container-low rounded-xl p-4 border border-outline-variant/20">
+                <p className="text-[10px] text-outline uppercase font-semibold mb-2">预览摘要</p>
+                <p className="text-sm font-bold">{newName || '未命名穿搭'}</p>
+                <p className="text-xs text-secondary mt-0.5">{brandSummary || '暂无品牌信息'}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-base font-bold text-primary">¥{totalPrice.toLocaleString()}</span>
+                  <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full">{priceRange}</span>
                 </div>
               </div>
             </div>
+
+            {/* Right column: image upload */}
+            <div>
+              <label className="block text-xs text-secondary mb-1 font-semibold">穿搭图片</label>
+              <ImageUploader images={newImages} onChange={setNewImages} max={5} />
+              <p className="text-[10px] text-outline mt-1.5">第一张为封面图。拖放排序。建议 3:4 比例。</p>
+            </div>
           </div>
-          <button onClick={handleAdd}
-            className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
-            确认添加
-          </button>
+
+          {/* Items section */}
+          <div className="border-t border-outline-variant/20 pt-5 mb-5">
+            <div className="flex justify-between items-center mb-3">
+              <h4 className="text-sm font-bold text-on-surface">搭配单品</h4>
+              <button onClick={addItem}
+                className="px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-xs font-semibold hover:bg-primary/20 transition-colors"
+              >+ 添加单品</button>
+            </div>
+            <div className="space-y-2">
+              {newItems.map((item, i) => (
+                <div key={i} className="grid grid-cols-12 gap-2 items-center bg-surface-container-low rounded-xl p-3 border border-outline-variant/10">
+                  <div className="col-span-3">
+                    <input value={item.name} onChange={e => updateItem(i, 'name', e.target.value)}
+                      placeholder="单品名称" className="w-full px-2 py-1.5 bg-white border border-outline-variant/30 rounded-lg text-xs focus:border-primary focus:outline-none" />
+                  </div>
+                  <div className="col-span-3">
+                    <input value={item.brand} onChange={e => updateItem(i, 'brand', e.target.value)}
+                      placeholder="品牌名" className="w-full px-2 py-1.5 bg-white border border-outline-variant/30 rounded-lg text-xs focus:border-primary focus:outline-none" />
+                  </div>
+                  <div className="col-span-2">
+                    <input value={item.price} onChange={e => updateItem(i, 'price', e.target.value)}
+                      placeholder="¥价格" type="number" className="w-full px-2 py-1.5 bg-white border border-outline-variant/30 rounded-lg text-xs focus:border-primary focus:outline-none" />
+                  </div>
+                  <div className="col-span-2">
+                    <select value={item.category} onChange={e => updateItem(i, 'category', e.target.value)}
+                      className="w-full px-2 py-1.5 bg-white border border-outline-variant/30 rounded-lg text-xs focus:border-primary focus:outline-none cursor-pointer">
+                      <option value="top">上衣</option>
+                      <option value="bottom">下装</option>
+                      <option value="outerwear">外套</option>
+                      <option value="dress">连衣裙</option>
+                      <option value="shoes">鞋履</option>
+                      <option value="accessory">配饰</option>
+                    </select>
+                  </div>
+                  <div className="col-span-2 flex justify-end">
+                    <button onClick={() => removeItem(i)} disabled={newItems.length === 1}
+                      className="px-2 py-1 text-xs text-error/60 hover:text-error disabled:opacity-20 transition-colors">移除</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Submit */}
+          <div className="flex gap-3 justify-end">
+            <button onClick={() => setShowForm(false)}
+              className="px-6 py-2.5 bg-surface-container text-on-surface rounded-lg text-sm font-semibold hover:bg-outline-variant/20 transition-colors">取消</button>
+            <button onClick={handleAdd}
+              disabled={!newName.trim() || newItems.every(it => !it.name.trim())}
+              className="px-8 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:opacity-90 disabled:opacity-40 transition-opacity shadow-sm">
+              确认上架
+            </button>
+          </div>
         </div>
       )}
 

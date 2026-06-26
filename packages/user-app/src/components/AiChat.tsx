@@ -4,7 +4,7 @@ import type { ChatMessage, RecommendationResult } from '../store/aiConversation'
 import { startSession, addUserMessage, generateFull } from '../store/aiConversation'
 import { useApp } from '../store/AppContext'
 import OutfitCardInline from './OutfitCardInline'
-import { IconRobot, IconSend } from './Icons'
+import { Bot, Send, Camera } from './Icons'
 
 interface Props {
   embedded?: boolean
@@ -94,7 +94,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20 shrink-0 bg-white/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary"><IconRobot size={20} /></div>
+          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Bot size={20} /></div>
           <div>
             <h2 className="text-base font-bold text-on-surface">逛逛AI 穿搭顾问</h2>
             <p className="text-[10px] text-outline">AI-powered style assistant</p>
@@ -201,7 +201,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
               disabled={loading}
               className="w-10 h-10 rounded-xl bg-surface-container-low border border-outline-variant/30 text-secondary flex items-center justify-center shrink-0 hover:border-primary hover:text-primary transition-colors active:scale-90"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M23 7l-3-3h-5l-1-2H10L9 4H4L1 7v13a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7z"/><circle cx="12" cy="14" r="4"/></svg>
+              <Camera size={18} />
             </button>
             <input
               ref={inputRef}
@@ -216,7 +216,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
               onClick={handleSend}
               disabled={!input.trim() || loading}
               className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center disabled:opacity-40 active:scale-90 transition-all hover:shadow-md hover:shadow-primary/20 shrink-0"
-            ><IconSend size={16} /></button>
+            ><Send size={16} /></button>
           </div>
 
           {/* Camera Permission Mock */}
@@ -229,16 +229,11 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
                 <div className="flex gap-3">
                   <button onClick={() => setShowCamera(false)} className="flex-1 py-2 bg-surface-container text-on-surface rounded-lg text-sm font-semibold">拒绝</button>
                   <button onClick={() => {
-                    setShowCamera(false); setThinkingText('正在分析你的穿搭照片...');
-                    setTimeout(() => {
-                      const ctx = state.outfits.filter(o => o.occasion === (occasion || 'work-commute')).slice(0, 2);
-                      const names = ctx.map(o => o.name).join('」和「');
-                      setMessages(prev => [...prev,
-                        { id: 'cam-u-' + Date.now(), role: 'user', text: '📸 拍照分析今日穿搭', timestamp: Date.now() },
-                        { id: 'cam-ai-' + Date.now(), role: 'ai', text: `我看到你的穿搭了！\n\n🔍 风格识别：${occasion ? '简约通勤' : '日常休闲'}风\n📊 搭配评分：87分\n\n💡 你的配色和廓形都不错。推荐尝试「${names}」，和你的风格会很搭！`, timestamp: Date.now() },
-                      ]);
-                      setThinkingText('');
-                    }, 1500);
+                    setShowCamera(false);
+                    setMessages(prev => [...prev,
+                      { id: 'cam-u-' + Date.now(), role: 'user', text: '📸 请求拍照分析穿搭', timestamp: Date.now() },
+                      { id: 'cam-ai-' + Date.now(), role: 'ai', text: '抱歉，无法获取手机相机权限。请前往系统设置 → 隐私 → 相机，允许逛逛AI访问你的相机后再试~', timestamp: Date.now() },
+                    ]);
                   }} className="flex-1 py-2 bg-primary text-white rounded-lg text-sm font-semibold">允许</button>
                 </div>
               </div>

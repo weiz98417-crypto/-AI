@@ -4,6 +4,10 @@ import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import OutfitsPage from './pages/OutfitsPage'
+import UsersPage from './pages/UsersPage'
+import OrdersPage from './pages/OrdersPage'
+import ActivitiesPage from './pages/ActivitiesPage'
+import SettingsPage from './pages/SettingsPage'
 import Sidebar from './components/Sidebar'
 import AdminTopBar from './components/AdminTopBar'
 
@@ -18,6 +22,10 @@ function AdminLayout() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/outfits" element={<OutfitsPage />} />
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/activities" element={<ActivitiesPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

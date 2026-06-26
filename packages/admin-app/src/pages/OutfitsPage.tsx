@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAdmin } from '../store/AdminContext'
-import { PRICE_RANGE_MAP } from '../shared/types'
+import { OUTFIT_IMAGE_POOL as IMG_POOL } from '../store/seedData'
 import type { ManagedOutfit } from '../shared/types'
 
 const OCCASION_COLORS: Record<string, string> = {
@@ -17,11 +17,11 @@ const OCCASION_LABELS: Record<string, string> = {
   'girls-gathering': '闺蜜聚会',
 }
 
-const CTR_VALUES: Record<string, number> = {
-  'work-commute-1': 78, 'work-commute-2': 62, 'work-commute-3': 85, 'work-commute-4': 55,
-  'client-meeting-1': 92, 'client-meeting-2': 71, 'client-meeting-3': 66,
-  'weekend-date-1': 88, 'weekend-date-2': 73, 'weekend-date-3': 59,
-  'girls-gathering-1': 95, 'girls-gathering-2': 81, 'girls-gathering-3': 68,
+const ALL_OCCASIONS = ['', 'work-commute', 'client-meeting', 'weekend-date', 'girls-gathering']
+
+function getDefaultImage(occasion: string): string {
+  const pool = IMG_POOL[occasion]
+  return pool ? pool[0] : '/assets/outfits/work-commute-1-main.jpg'
 }
 
 export default function OutfitsPage() {
@@ -31,7 +31,20 @@ export default function OutfitsPage() {
   const [newName, setNewName] = useState('')
   const [newOccasion, setNewOccasion] = useState('work-commute')
   const [newPrice, setNewPrice] = useState('')
+  const [newImage, setNewImage] = useState(getDefaultImage('work-commute'))
+  const [filterOccasion, setFilterOccasion] = useState('')
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editName, setEditName] = useState('')
+  const [editPrice, setEditPrice] = useState('')
+  const [sortBy, setSortBy] = useState<'name' | 'price' | 'status' | ''>('')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const perPage = 10
+
+  const handleOccasionChange = (occasion: string) => {
+    setNewOccasion(occasion)
+    setNewImage(getDefaultImage(occasion))
+  }
 
   const handleAdd = () => {
     if (!newName.trim()) return
@@ -41,11 +54,24 @@ export default function OutfitsPage() {
       id, occasion: newOccasion as ManagedOutfit['occasion'],
       name: newName, items: [], totalPrice: price,
       priceRange: price > 1000 ? 'premium' as const : price > 500 ? 'mid' as const : 'budget' as const,
-      styleTags: ['简约通勤'], coverImage: '/assets/outfits/work-commute-1-main.jpg',
+      styleTags: ['简约通勤'], coverImage: newImage,
       brandSummary: '自定义品牌', active: true,
     }
     dispatch({ type: 'ADD_OUTFIT', outfit })
     setNewName(''); setNewPrice(''); setShowForm(false); setPage(1)
+    setNewImage(getDefaultImage('work-commute'))
+  }
+
+  const handleEdit = (outfit: ManagedOutfit) => {
+    const price = parseInt(editPrice) || outfit.totalPrice
+    dispatch({ type: 'UPDATE_OUTFIT', outfitId: outfit.id, name: editName || outfit.name, totalPrice: price })
+    setEditingId(null)
+  }
+
+  const startEdit = (outfit: ManagedOutfit) => {
+    setEditingId(outfit.id)
+    setEditName(outfit.name)
+    setEditPrice(String(outfit.totalPrice))
   }
 
   if (state.loading) {
@@ -61,9 +87,33 @@ export default function OutfitsPage() {
   }
 
   const outfits = state.managedOutfits
-  const total = outfits.length
+  let filtered = filterOccasion
+    ? outfits.filter(o => o.occasion === filterOccasion)
+    : outfits
+
+  // Sort
+  if (sortBy) {
+    filtered = [...filtered].sort((a, b) => {
+      let va: any, vb: any
+      if (sortBy === 'name') { va = a.name; vb = b.name }
+      else if (sortBy === 'price') { va = a.totalPrice; vb = b.totalPrice }
+      else { va = a.active ? 1 : 0; vb = b.active ? 1 : 0 }
+      if (va < vb) return sortDir === 'asc' ? -1 : 1
+      if (va > vb) return sortDir === 'asc' ? 1 : -1
+      return 0
+    })
+  }
+
+  const toggleSort = (col: 'name' | 'price' | 'status') => {
+    if (sortBy === col) setSortDir(sd => sd === 'asc' ? 'desc' : 'asc')
+    else { setSortBy(col); setSortDir('asc') }
+  }
+
+  const total = filtered.length
   const pages = Math.ceil(total / perPage)
-  const paged = outfits.slice((page - 1) * perPage, page * perPage)
+  const paged = filtered.slice((page - 1) * perPage, page * perPage)
+
+  const occasionImages = IMG_POOL[newOccasion] || IMG_POOL['work-commute']
 
   return (
     <div className="space-y-6 animate-fade-in-up">
@@ -74,9 +124,16 @@ export default function OutfitsPage() {
           <p className="text-sm text-secondary mt-1">管理和策划推荐穿搭内容</p>
         </div>
         <div className="flex gap-3">
-          <button className="px-4 py-2 flex items-center gap-2 bg-surface border border-outline-variant/40 rounded-lg text-secondary hover:border-primary transition-all text-xs font-semibold">
-            筛选
-          </button>
+          <select
+            value={filterOccasion}
+            onChange={e => { setFilterOccasion(e.target.value); setPage(1) }}
+            className="px-4 py-2 bg-surface border border-outline-variant/40 rounded-lg text-secondary hover:border-primary transition-all text-xs font-semibold cursor-pointer"
+          >
+            <option value="">全部场合</option>
+            {ALL_OCCASIONS.filter(Boolean).map(o => (
+              <option key={o} value={o}>{OCCASION_LABELS[o]}</option>
+            ))}
+          </select>
           <button
             onClick={() => setShowForm(!showForm)}
             className="px-4 py-2 flex items-center gap-2 bg-primary text-white rounded-lg hover:opacity-90 transition-all text-xs font-semibold shadow-sm"
@@ -90,7 +147,7 @@ export default function OutfitsPage() {
       {showForm && (
         <div className="bg-surface rounded-2xl border border-primary/30 p-6 shadow-sm">
           <h3 className="text-sm font-bold mb-4 text-primary">新增穿搭方案</h3>
-          <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-4 gap-4 mb-4">
             <div>
               <label className="block text-xs text-secondary mb-1 font-semibold">穿搭名称</label>
               <input value={newName} onChange={e => setNewName(e.target.value)}
@@ -99,8 +156,8 @@ export default function OutfitsPage() {
             </div>
             <div>
               <label className="block text-xs text-secondary mb-1 font-semibold">场合</label>
-              <select value={newOccasion} onChange={e => setNewOccasion(e.target.value)}
-                className="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none">
+              <select value={newOccasion} onChange={e => handleOccasionChange(e.target.value)}
+                className="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none cursor-pointer">
                 <option value="work-commute">上班通勤</option>
                 <option value="client-meeting">客户会议</option>
                 <option value="weekend-date">周末约会</option>
@@ -113,6 +170,20 @@ export default function OutfitsPage() {
                 className="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm focus:border-primary focus:outline-none"
                 placeholder="如：1280" type="number" />
             </div>
+            <div>
+              <label className="block text-xs text-secondary mb-1 font-semibold">封面图片</label>
+              <div className="flex gap-2 items-center">
+                <select value={newImage} onChange={e => setNewImage(e.target.value)}
+                  className="flex-1 px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-xs focus:border-primary focus:outline-none cursor-pointer">
+                  {occasionImages.map(img => (
+                    <option key={img} value={img}>{img.split('/').pop()}</option>
+                  ))}
+                </select>
+                <div className="w-10 h-12 rounded-lg bg-surface-container overflow-hidden border border-outline-variant/20 shrink-0">
+                  <img src={newImage} alt="preview" className="w-full h-full object-cover" />
+                </div>
+              </div>
+            </div>
           </div>
           <button onClick={handleAdd}
             className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
@@ -124,8 +195,8 @@ export default function OutfitsPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { label: '已发布', value: total, dot: 'bg-green-500' },
-          { label: '草稿', value: 3, dot: 'bg-secondary' },
+          { label: '已发布', value: outfits.filter(o => o.active).length, dot: 'bg-green-500' },
+          { label: '已下架', value: outfits.filter(o => !o.active).length, dot: 'bg-secondary' },
           { label: '平均点击率', value: '8.5%', dot: 'bg-tertiary' },
           { label: '总曝光', value: '42.5k', dot: 'bg-red-400' },
         ].map((s) => (
@@ -146,18 +217,25 @@ export default function OutfitsPage() {
             <thead>
               <tr className="bg-surface-container-low border-b border-outline-variant/20">
                 <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider">预览</th>
-                <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider">穿搭名称</th>
+                <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider cursor-pointer hover:text-primary select-none" onClick={() => toggleSort('name')}>
+                  穿搭名称 {sortBy === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
                 <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider">场合</th>
-                <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider">价格</th>
+                <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider cursor-pointer hover:text-primary select-none" onClick={() => toggleSort('price')}>
+                  价格 {sortBy === 'price' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
                 <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider">CTR</th>
-                <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider">状态</th>
+                <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider cursor-pointer hover:text-primary select-none" onClick={() => toggleSort('status')}>
+                  状态 {sortBy === 'status' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
                 <th className="px-6 py-4 text-xs text-secondary font-semibold uppercase tracking-wider text-right">操作</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant/10">
               {paged.map((outfit) => {
-                const ctr = CTR_VALUES[outfit.id] || 50
+                const ctr = Math.floor(Math.random() * 40 + 55)
                 const barColor = ctr >= 80 ? 'bg-primary' : ctr >= 60 ? 'bg-primary/60' : 'bg-primary/30'
+                const isEditing = editingId === outfit.id
                 return (
                   <tr key={outfit.id} className="hover:bg-surface-container-low hover:shadow-sm transition-all group border-l-4 border-l-transparent hover:border-l-primary/30">
                     <td className="px-6 py-4">
@@ -166,15 +244,30 @@ export default function OutfitsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <p className="text-sm font-semibold text-on-surface">{outfit.name}</p>
-                      <p className="text-[10px] text-secondary">ID: {outfit.id}</p>
+                      {isEditing ? (
+                        <input value={editName} onChange={e => setEditName(e.target.value)}
+                          className="w-full px-2 py-1 bg-surface-container-low border border-outline-variant rounded text-sm focus:border-primary focus:outline-none" />
+                      ) : (
+                        <>
+                          <p className="text-sm font-semibold text-on-surface">{outfit.name}</p>
+                          <p className="text-[10px] text-secondary">ID: {outfit.id}</p>
+                        </>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${OCCASION_COLORS[outfit.occasion] || 'bg-surface-container text-secondary'}`}>
                         {OCCASION_LABELS[outfit.occasion] || outfit.occasion}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium">¥{outfit.totalPrice}</td>
+                    <td className="px-6 py-4 text-sm font-medium">
+                      {isEditing ? (
+                        <input value={editPrice} onChange={e => setEditPrice(e.target.value)}
+                          type="number"
+                          className="w-20 px-2 py-1 bg-surface-container-low border border-outline-variant rounded text-sm focus:border-primary focus:outline-none" />
+                      ) : (
+                        `¥${outfit.totalPrice}`
+                      )}
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <div className="flex justify-between text-xs font-semibold">
@@ -202,7 +295,17 @@ export default function OutfitsPage() {
                         >
                           {outfit.active ? '下架' : '上架'}
                         </button>
-                        <button className="p-1.5 text-secondary hover:text-primary hover:bg-primary/10 rounded-lg transition-all text-sm font-semibold">Edit</button>
+                        {isEditing ? (
+                          <>
+                            <button onClick={() => handleEdit(outfit)} className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-all text-sm font-semibold">保存</button>
+                            <button onClick={() => setEditingId(null)} className="p-1.5 text-secondary hover:bg-outline-variant/30 rounded-lg transition-all text-sm font-semibold">取消</button>
+                          </>
+                        ) : (
+                          <>
+                            <button onClick={() => startEdit(outfit)} className="p-1.5 text-secondary hover:text-primary hover:bg-primary/10 rounded-lg transition-all text-sm font-semibold">Edit</button>
+                            <button onClick={() => setDeleteConfirm(outfit.id)} className="p-1.5 text-error/60 hover:text-error hover:bg-error/5 rounded-lg transition-all text-sm font-semibold">删除</button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -240,6 +343,22 @@ export default function OutfitsPage() {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirm Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => setDeleteConfirm(null)}>
+          <div className="bg-surface rounded-2xl p-6 shadow-2xl border border-outline-variant/20 max-w-sm mx-4" onClick={e => e.stopPropagation()}>
+            <h3 className="text-base font-bold text-on-surface mb-2">确认删除</h3>
+            <p className="text-sm text-secondary mb-4">
+              确定要删除「{state.managedOutfits.find(o => o.id === deleteConfirm)?.name}」吗？此操作不可撤销。
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button onClick={() => setDeleteConfirm(null)} className="px-4 py-2 bg-surface-container text-on-surface rounded-lg text-sm font-semibold hover:bg-outline-variant/20 transition-colors">取消</button>
+              <button onClick={() => { dispatch({ type: 'DELETE_OUTFIT', outfitId: deleteConfirm }); setDeleteConfirm(null) }} className="px-4 py-2 bg-error text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">删除</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

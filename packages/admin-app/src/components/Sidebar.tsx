@@ -8,6 +8,10 @@ const NAV = [
   { path: '/', label: '数据看板' },
   { path: '/analytics', label: '用户洞察' },
   { path: '/outfits', label: '内容管理' },
+  { path: '/users', label: '用户管理' },
+  { path: '/orders', label: '订单管理' },
+  { path: '/activities', label: '活动日志' },
+  { path: '/settings', label: '系统设置' },
 ]
 
 export default function Sidebar() {
@@ -23,7 +27,7 @@ export default function Sidebar() {
         <p className="text-xs text-secondary uppercase tracking-widest mt-1 font-semibold">Admin Console</p>
       </div>
 
-      <nav className="flex-1 space-y-0.5">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto">
         {NAV.map((item) => {
           const active = location.pathname === item.path
           return (

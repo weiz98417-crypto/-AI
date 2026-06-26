@@ -1,8 +1,10 @@
 {
-  "buildCommand": "pnpm -F @ggai/user-app build",
+  "buildCommand": "pnpm -F @ggai/user-app build && pnpm -F @ggai/admin-app build && mkdir -p packages/user-app/dist/admin && cp -r packages/admin-app/dist/* packages/user-app/dist/admin/",
   "outputDirectory": "packages/user-app/dist",
   "installCommand": "pnpm install",
   "rewrites": [
+    { "source": "/admin/(.*)", "destination": "/admin/index.html" },
+    { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

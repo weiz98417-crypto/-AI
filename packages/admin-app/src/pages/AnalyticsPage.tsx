@@ -1,27 +1,9 @@
+import { useState } from 'react'
 import { useAdmin } from '../store/AdminContext'
-
-const STYLE_BARS = [
-  { name: '简约通勤', pct: 42, color: 'bg-primary-container' },
-  { name: '优雅知性', pct: 28, color: 'bg-primary' },
-  { name: '波西米亚', pct: 18, color: 'bg-tertiary-container' },
-  { name: '街头轻奢', pct: 12, color: 'bg-secondary-container' },
-]
-
-const COLORS = [
-  { name: '珊瑚粉', hex: '#E8A0B9', pct: 35 },
-  { name: '天蓝色', hex: '#A0BEE8', pct: 24 },
-  { name: '灰绿色', hex: '#D4E2D4', pct: 19 },
-  { name: '午夜黑', hex: '#342F30', pct: 15 },
-]
-
-const COHORTS = [
-  { label: '8月1日', values: [100, 82, 75, 68, 52, 48, 41, 35] },
-  { label: '8月8日', values: [100, 85, 78, 72, 64, 59, 55, null] },
-  { label: '8月15日', values: [100, 88, 81, 76, 69, 65, null, null] },
-]
 
 export default function AnalyticsPage() {
   const { state } = useAdmin()
+  const [timeRange, setTimeRange] = useState('30')
 
   if (state.loading) {
     return (
@@ -34,6 +16,10 @@ export default function AnalyticsPage() {
       </div>
     )
   }
+
+  // Filter style bars based on time range (simulate different data)
+  const multiplier = timeRange === '90' ? 0.85 : 1
+  const styleBars = state.styleBars.map(b => ({ ...b, pct: Math.round(b.pct * multiplier) }))
 
   return (
     <div className="space-y-6 animate-fade-in-up">
@@ -49,13 +35,17 @@ export default function AnalyticsPage() {
             <h3 className="text-xl font-semibold text-primary flex items-center gap-2">
               热门风格
             </h3>
-            <select className="bg-surface border border-outline-variant/30 rounded-lg text-xs py-1.5 px-3">
-              <option>最近30天</option>
-              <option>最近90天</option>
+            <select
+              value={timeRange}
+              onChange={e => setTimeRange(e.target.value)}
+              className="bg-surface border border-outline-variant/30 rounded-lg text-xs py-1.5 px-3 cursor-pointer"
+            >
+              <option value="30">最近30天</option>
+              <option value="90">最近90天</option>
             </select>
           </div>
           <div className="space-y-5">
-            {STYLE_BARS.map((bar) => (
+            {styleBars.map((bar) => (
               <div key={bar.name} className="space-y-1.5">
                 <div className="flex justify-between text-xs text-secondary font-semibold">
                   <span>{bar.name}</span>
@@ -64,7 +54,7 @@ export default function AnalyticsPage() {
                 <div className="h-9 bg-surface-container rounded-full overflow-hidden flex items-center px-1">
                   <div
                     className={`h-7 ${bar.color} rounded-full transition-all duration-1000`}
-                    style={{ width: `${bar.pct}%`, minWidth: bar.pct > 0 ? '30px' : '0' }}
+                    style={{ width: `${Math.max(bar.pct, 2)}%`, minWidth: bar.pct > 0 ? '30px' : '0' }}
                   />
                 </div>
               </div>
@@ -76,7 +66,7 @@ export default function AnalyticsPage() {
         <div className="col-span-12 lg:col-span-4 bg-white/70 backdrop-blur-sm border border-primary-container/20 rounded-3xl p-8 hover:shadow-lg hover:border-primary/30 transition-all duration-300">
           <h3 className="text-xl font-semibold text-primary mb-8">流行色系</h3>
           <div className="flex flex-col gap-5">
-            {COLORS.map((c) => (
+            {state.colorPrefs.map((c) => (
               <div key={c.name} className="flex items-center gap-4 group cursor-default">
                 <div
                   className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 shrink-0 animate-scale-in"
@@ -127,7 +117,7 @@ export default function AnalyticsPage() {
 
               {/* Rows */}
               <div className="space-y-1">
-                {COHORTS.map((cohort, ri) => (
+                {state.cohorts.map((cohort, ri) => (
                   <div key={ri} className="grid grid-cols-9 gap-1">
                     <div className="bg-surface px-3 py-2 rounded-lg text-xs text-primary font-semibold border border-outline-variant/10">
                       {cohort.label}
@@ -151,34 +141,22 @@ export default function AnalyticsPage() {
 
           {/* Insight cards */}
           <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="bg-surface p-5 rounded-2xl border border-outline-variant/20 hover:border-primary/30 hover:shadow-md transition-all cursor-default">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><span className="w-3 h-3 rounded-sm bg-primary inline-block" /></div>
-                <h4 className="text-sm font-semibold">转化率</h4>
-              </div>
-              <p className="text-2xl font-bold">12.4%</p>
-              <p className="text-xs text-green-600 font-semibold mt-1">↑ +2.4% 较上周</p>
-            </div>
-            <div className="bg-surface p-5 rounded-2xl border border-outline-variant/20 hover:border-primary/30 hover:shadow-md transition-all cursor-default">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-tertiary/10 flex items-center justify-center"><span className="w-3 h-3 rounded-sm bg-tertiary inline-block" /></div>
-                <h4 className="text-sm font-semibold">活跃用户</h4>
-              </div>
-              <p className="text-2xl font-bold">1,842</p>
-              <p className="text-xs text-secondary mt-1">12分钟前更新</p>
-            </div>
-            <div className="bg-surface p-5 rounded-2xl border border-outline-variant/20 hover:border-primary/30 hover:shadow-md transition-all cursor-default">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center"><span className="w-3 h-3 rounded-sm bg-secondary inline-block" /></div>
-                <h4 className="text-sm font-semibold">用户满意度</h4>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-3 bg-surface-container rounded-full overflow-hidden">
-                  <div className="h-full bg-primary-container rounded-full" style={{ width: '88%' }} />
+            {state.insightCards.map((card) => (
+              <div key={card.title} className="bg-surface p-5 rounded-2xl border border-outline-variant/20 hover:border-primary/30 hover:shadow-md transition-all cursor-default">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`w-10 h-10 rounded-xl ${card.color} flex items-center justify-center`}>
+                    <span className={`w-3 h-3 rounded-sm ${card.up ? 'bg-primary' : 'bg-error'} inline-block`} />
+                  </div>
+                  <h4 className="text-sm font-semibold">{card.title}</h4>
                 </div>
-                <span className="text-sm font-bold text-primary">88%</span>
+                <p className="text-2xl font-bold">{card.value}</p>
+                {card.change && (
+                  <p className={`text-xs font-semibold mt-1 ${card.up ? 'text-green-600' : 'text-error'}`}>
+                    {card.up ? '↑' : '↓'} {card.change}
+                  </p>
+                )}
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

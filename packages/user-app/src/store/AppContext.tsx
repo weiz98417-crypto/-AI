@@ -1,7 +1,11 @@
 import { createContext, useContext, useReducer, useEffect, type ReactNode, type Dispatch } from 'react'
-import type { Occasion, UserPreferences, BrowsingHistoryEntry } from '@ggai/shared/types'
+import type { Occasion, UserPreferences, BrowsingHistoryEntry, Outfit } from '@ggai/shared/types'
+import { DataStore } from '@ggai/shared/store'
 import { seedOccasions, seedOutfits } from './seedData'
-import type { Outfit } from '@ggai/shared/types'
+import { preferenceStore, favoriteStore, historyStore } from './stores'
+
+// Shared outfit store — the admin also writes to this key
+export const sharedOutfitStore = new DataStore<any[]>('ggai-shared-outfits', seedOutfits)
 
 export interface AppState {
   occasions: Occasion[]
@@ -15,7 +19,7 @@ export interface AppState {
 const initialState: AppState = {
   occasions: [],
   outfits: [],
-  preferences: { colors: [], priceTier: 'all', styleTags: [] },
+  preferences: preferenceStore.getSeed(),
   favorites: [],
   browsingHistory: [],
   loading: true,
@@ -26,6 +30,32 @@ export type AppAction =
   | { type: 'TOGGLE_FAVORITE'; outfitId: string }
   | { type: 'ADD_HISTORY'; entry: BrowsingHistoryEntry }
   | { type: 'UPDATE_PREFERENCES'; preferences: UserPreferences }
+  | { type: 'SYNC_OUTFITS'; outfits: Outfit[] }
+
+function mergeAdminOutfits(adminOutfits: any[] | null): Outfit[] {
+  if (!adminOutfits || !Array.isArray(adminOutfits)) return seedOutfits
+  const adminMap = new Map(adminOutfits.map((o: any) => [o.id, o]))
+  const updated = seedOutfits
+    .map(o => {
+      const admin = adminMap.get(o.id)
+      if (admin) {
+        return { ...o, name: admin.name, totalPrice: admin.totalPrice, priceRange: admin.priceRange, occasion: admin.occasion, styleTags: admin.styleTags, coverImage: admin.coverImage, brandSummary: admin.brandSummary, active: admin.active }
+      }
+      return o
+    })
+    .filter((o: any) => o.active !== false)
+  for (const admin of adminOutfits) {
+    if (!updated.find((o: Outfit) => o.id === admin.id) && admin.active) {
+      updated.push({
+        id: admin.id, occasion: admin.occasion, name: admin.name,
+        items: admin.items || [], totalPrice: admin.totalPrice,
+        priceRange: admin.priceRange, styleTags: admin.styleTags || [],
+        coverImage: admin.coverImage, brandSummary: admin.brandSummary || '',
+      })
+    }
+  }
+  return updated
+}
 
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
@@ -36,7 +66,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
       const favorites = exists
         ? state.favorites.filter((id) => id !== action.outfitId)
         : [...state.favorites, action.outfitId]
-      localStorage.setItem('ggai-favs-v2', JSON.stringify(favorites))
+      favoriteStore.write(favorites)
       return { ...state, favorites }
     }
     case 'ADD_HISTORY': {
@@ -44,13 +74,15 @@ function appReducer(state: AppState, action: AppAction): AppState {
         { ...action.entry },
         ...state.browsingHistory.filter((e) => e.outfitId !== action.entry.outfitId),
       ].slice(0, 50)
-      localStorage.setItem('ggai-hist-v2', JSON.stringify(history))
+      historyStore.write(history)
       return { ...state, browsingHistory: history }
     }
     case 'UPDATE_PREFERENCES': {
-      localStorage.setItem('ggai-prefs-v2', JSON.stringify(action.preferences))
+      preferenceStore.write(action.preferences)
       return { ...state, preferences: action.preferences }
     }
+    case 'SYNC_OUTFITS':
+      return { ...state, outfits: action.outfits }
     default:
       return state
   }
@@ -62,13 +94,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState)
 
   useEffect(() => {
-    // NEVER cache outfits to localStorage — always use latest seedData with current image URLs
-    const outfits = seedOutfits
-    const preferences = JSON.parse(localStorage.getItem('ggai-prefs-v2') || 'null') || initialState.preferences
-    const favorites = JSON.parse(localStorage.getItem('ggai-favs-v2') || 'null') || []
-    const history = JSON.parse(localStorage.getItem('ggai-hist-v2') || 'null') || []
+    // Initialize from stores
+    const adminOutfits = sharedOutfitStore.read()
+    const outfits = mergeAdminOutfits(adminOutfits)
+    const preferences = preferenceStore.read()
+    const favorites = favoriteStore.read()
+    const history = historyStore.read()
 
     dispatch({ type: 'INIT_DATA', occasions: seedOccasions, outfits, preferences, favorites, history })
+
+    // Subscribe to admin outfit changes in real-time
+    const unsub = sharedOutfitStore.subscribe((adminData) => {
+      const merged = mergeAdminOutfits(adminData)
+      dispatch({ type: 'SYNC_OUTFITS', outfits: merged })
+    })
+
+    return unsub
   }, [])
 
   return (

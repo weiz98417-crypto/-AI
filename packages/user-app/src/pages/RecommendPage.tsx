@@ -1,10 +1,10 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { PRICE_RANGE_MAP } from '@ggai/shared/types'
 import type { Outfit } from '@ggai/shared/types'
 import { useApp } from '../store/AppContext'
-import { generateAiOutfitDescription, calculateAiScore } from '../store/aiEngine'
-import { getAiOutfitRecommendation } from '../store/deepseek'
+import { calculateAiScore } from '../store/aiEngine'
+import AiChat from '../components/AiChat'
 
 export default function RecommendPage() {
   const { occasion } = useParams<{ occasion: string }>()
@@ -12,6 +12,7 @@ export default function RecommendPage() {
   const { state, dispatch } = useApp()
   const [priceFilter, setPriceFilter] = useState('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [showAiChat, setShowAiChat] = useState(false)
 
   const currentOccasion = state.occasions.find((o) => o.id === occasion)
 
@@ -24,46 +25,10 @@ export default function RecommendPage() {
     return list
   }, [state.outfits, occasion, priceFilter])
 
-  const [aiGenerating, setAiGenerating] = useState(false)
-  const [aiGeneratedId, setAiGeneratedId] = useState<string | null>(null)
-  const [aiText, setAiText] = useState('')
-
   const handleOutfitClick = (outfit: Outfit) => {
     setExpandedId(expandedId === outfit.id ? null : outfit.id)
     dispatch({ type: 'ADD_HISTORY', entry: { outfitId: outfit.id, viewedAt: Date.now() } })
   }
-
-  const handleAiGenerate = useCallback(() => {
-    setAiGenerating(true)
-    setAiGeneratedId(null)
-    setAiText('')
-    const occasionOutfits = state.outfits.filter((o) => o.occasion === occasion)
-    // Call DeepSeek for real AI recommendation
-    getAiOutfitRecommendation(currentOccasion?.name || occasion || '', state.preferences, occasionOutfits)
-      .then((text) => {
-        setAiText(text)
-        // Also pick best scored outfit locally
-        const scored = occasionOutfits
-          .map((o) => ({ o, score: calculateAiScore(o, state.preferences) }))
-          .sort((a, b) => b.score - a.score)
-        if (scored.length > 0) {
-          setAiGeneratedId(scored[0].o.id)
-          setExpandedId(scored[0].o.id)
-        }
-        setAiGenerating(false)
-      })
-      .catch(() => {
-        // Fallback to local scoring
-        const scored = occasionOutfits
-          .map((o) => ({ o, score: calculateAiScore(o, state.preferences) }))
-          .sort((a, b) => b.score - a.score)
-        if (scored.length > 0) {
-          setAiGeneratedId(scored[0].o.id)
-          setExpandedId(scored[0].o.id)
-        }
-        setAiGenerating(false)
-      })
-  }, [state.outfits, state.preferences, occasion, currentOccasion])
 
   return (
     <div className="min-h-screen bg-background pb-32">
@@ -110,38 +75,22 @@ export default function RecommendPage() {
           </div>
         </div>
 
-        {/* AI Generate Button */}
-        <div className="mt-4 mb-4">
-          <button
-            onClick={handleAiGenerate}
-            disabled={aiGenerating}
-            className={`w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
-              aiGenerating
-                ? 'bg-primary/20 text-primary animate-pulse'
-                : 'bg-gradient-to-r from-primary to-primary-light text-white shadow-md active:scale-[0.98] btn-shimmer'
-            }`}
-          >
-            <span className="text-lg">{aiGenerating ? '🔄' : '✨'}</span>
-            {aiGenerating ? 'AI is analyzing your preferences...' : 'AI Generate Best Pick'}
-          </button>
-        </div>
-
-        {aiGeneratedId && (
-          <div className="bg-primary-fixed/30 border border-primary/20 rounded-xl p-3 mb-4">
-            <div className="text-sm mb-1">
-              <span className="text-primary font-semibold">✨ 逛逛AI Pick: </span>
-              <span className="text-on-surface">
-                {state.outfits.find((o) => o.id === aiGeneratedId)?.name}
-              </span>
-              <span className="text-primary font-bold ml-1">
-                {calculateAiScore(state.outfits.find((o) => o.id === aiGeneratedId)!, state.preferences)}% match
-              </span>
+        {/* AI Chat Toggle */}
+        <div className="mt-3 mb-4">
+          {!showAiChat ? (
+            <button
+              onClick={() => setShowAiChat(true)}
+              className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-light text-white shadow-md active:scale-[0.98] btn-shimmer transition-all"
+            >
+              <span className="text-lg">✨</span>
+              Ask AI for Advice
+            </button>
+          ) : (
+            <div className="bg-surface rounded-2xl border border-primary/20 overflow-hidden shadow-sm">
+              <AiChat embedded occasion={currentOccasion?.name} onClose={() => setShowAiChat(false)} />
             </div>
-            {aiText && (
-              <p className="text-sm text-on-surface leading-relaxed mt-2 pt-2 border-t border-primary/20 whitespace-pre-line">{aiText}</p>
-            )}
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Outfit Cards */}
         <div className="flex flex-col gap-6">

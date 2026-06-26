@@ -56,3 +56,24 @@ export const PRICE_RANGE_MAP: Record<Outfit['priceRange'], { label: string; rang
   premium: { label: '¥500-1000', range: [500, 1000] },
   luxury:  { label: '¥1000+', range: [1000, Infinity] },
 };
+
+export interface AdminUser {
+  id: string
+  name: string
+  avatar: string  // initials
+  email: string
+  joinDate: string
+  orderCount: number
+  totalSpent: number
+  status: 'active' | 'banned'
+}
+
+export interface AdminOrder {
+  id: string
+  userId: string
+  userName: string
+  items: string  // outfit name
+  amount: number
+  status: 'pending' | 'shipped' | 'delivered' | 'cancelled'
+  date: string
+}

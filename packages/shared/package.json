@@ -7,6 +7,11 @@
   "type": "module",
   "exports": {
     "./types": "./types/index.ts",
-    "./tokens": "./tokens/index.ts"
+    "./tokens": "./tokens/index.ts",
+    "./store": "./store/index.ts"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.28",
+    "react": "^18.3.1"
   }
 }

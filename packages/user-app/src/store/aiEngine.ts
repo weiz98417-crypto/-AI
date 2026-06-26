@@ -51,12 +51,11 @@ export function calculateAiScore(outfit: Outfit, preferences: UserPreferences): 
     }
   }
 
-  // Style tag match
+  // Style tag match — exact or substring (not character-level which produces false positives)
   if (preferences.styleTags.length > 0) {
     const tagOverlap = outfit.styleTags.filter((t) =>
       preferences.styleTags.some((pt) =>
-        t.includes(pt) || pt.includes(t) ||
-        t.split('').some((c) => pt.includes(c))
+        t === pt || t.includes(pt) || pt.includes(t)
       )
     ).length
     score = Math.min(99, score + tagOverlap * 4)

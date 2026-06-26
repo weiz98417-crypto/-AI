@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import type { ManagedOutfit } from '../shared/types'
+import { OUTFIT_IMAGE_POOL } from '../store/seedData'
 
 interface Props {
   onClose: () => void
@@ -83,6 +84,8 @@ export default function AiGenerateModal({ onClose, onAdd }: Props) {
           for (const [k, v] of Object.entries(occasionMap)) {
             if (newAnswers[1].includes(k)) { occasion = v; break }
           }
+          const pool = OUTFIT_IMAGE_POOL[occasion] || OUTFIT_IMAGE_POOL['work-commute']
+          const autoImage = pool[Math.floor(Math.random() * pool.length)]
           const outfit: ManagedOutfit = {
             id: `ai-${Date.now()}`,
             occasion: occasion as ManagedOutfit['occasion'],
@@ -91,7 +94,7 @@ export default function AiGenerateModal({ onClose, onAdd }: Props) {
             totalPrice: parsed.totalPrice || 888,
             priceRange: parsed.totalPrice > 1000 ? 'premium' : parsed.totalPrice > 500 ? 'mid' : 'budget',
             styleTags: parsed.styleTags || ['简约通勤'],
-            coverImage: '/assets/outfits/work-commute-1-main.jpg',
+            coverImage: autoImage,
             brandSummary: parsed.brandSummary || 'AI Generated',
             active: true,
           }

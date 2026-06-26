@@ -70,6 +70,52 @@ const outfitItems: Record<string, Outfit['items']> = {
     { name: '缎面吊带裙', brand: 'Ganni', price: 699, category: 'dress', image: '/assets/outfits/girls-gathering-3-item1.svg' },
     { name: '厚底马丁靴', brand: 'Dr. Martens', price: 599, category: 'shoes', image: '/assets/outfits/girls-gathering-3-item2.svg' },
   ],
+  // New outfits
+  'work-commute-5': [
+    { name: '米色风衣', brand: 'Burberry', price: 1299, category: 'outerwear', image: '/assets/outfits/work-commute-5-item1.svg' },
+    { name: '白色衬衫', brand: 'Everlane', price: 349, category: 'top', image: '/assets/outfits/work-commute-5-item2.svg' },
+    { name: '直筒长裤', brand: 'JNBY', price: 399, category: 'bottom', image: '/assets/outfits/work-commute-5-item3.svg' },
+  ],
+  'client-meeting-4': [
+    { name: '格纹西装套装', brand: 'Burberry', price: 2499, category: 'outerwear', image: '/assets/outfits/client-meeting-4-item1.svg' },
+    { name: '真丝衬衫', brand: 'Totême', price: 899, category: 'top', image: '/assets/outfits/client-meeting-4-item2.svg' },
+    { name: '鳄鱼纹手袋', brand: 'YSL', price: 1899, category: 'accessory', image: '/assets/outfits/client-meeting-4-item3.svg' },
+  ],
+  'weekend-date-4': [
+    { name: '针织两件套', brand: 'GANNI', price: 899, category: 'top', image: '/assets/outfits/weekend-date-4-item1.svg' },
+    { name: '百褶裙', brand: 'Maje', price: 599, category: 'bottom', image: '/assets/outfits/weekend-date-4-item2.svg' },
+    { name: '草编包', brand: 'Loewe', price: 1599, category: 'accessory', image: '/assets/outfits/weekend-date-4-item3.svg' },
+  ],
+  'weekend-date-5': [
+    { name: '印花衬衫', brand: 'Rixo', price: 699, category: 'top', image: '/assets/outfits/weekend-date-5-item1.svg' },
+    { name: '白色牛仔裤', brand: 'Levi\'s', price: 449, category: 'bottom', image: '/assets/outfits/weekend-date-5-item2.svg' },
+    { name: '藤编穆勒鞋', brand: 'Castaner', price: 529, category: 'shoes', image: '/assets/outfits/weekend-date-5-item3.svg' },
+  ],
+  'girls-gathering-4': [
+    { name: '廓形西装外套', brand: 'Balenciaga', price: 1899, category: 'outerwear', image: '/assets/outfits/girls-gathering-4-item1.svg' },
+    { name: '短上衣', brand: 'Urban Outfitters', price: 199, category: 'top', image: '/assets/outfits/girls-gathering-4-item2.svg' },
+    { name: '高腰阔腿裤', brand: 'COS', price: 499, category: 'bottom', image: '/assets/outfits/girls-gathering-4-item3.svg' },
+  ],
+  'girls-gathering-5': [
+    { name: '蕾丝连衣裙', brand: 'Self-Portrait', price: 1299, category: 'dress', image: '/assets/outfits/girls-gathering-5-item1.svg' },
+    { name: '水钻高跟鞋', brand: 'Jimmy Choo', price: 2199, category: 'shoes', image: '/assets/outfits/girls-gathering-5-item2.svg' },
+    { name: '珍珠手袋', brand: 'Shrimps', price: 899, category: 'accessory', image: '/assets/outfits/girls-gathering-5-item3.svg' },
+  ],
+  'work-commute-6': [
+    { name: '羊绒混纺大衣', brand: 'Max Mara', price: 2199, category: 'outerwear', image: '/assets/outfits/work-commute-6-item1.svg' },
+    { name: '真丝衬衫', brand: 'Theory', price: 599, category: 'top', image: '/assets/outfits/work-commute-6-item2.svg' },
+    { name: '铅笔裤', brand: 'Uniqlo', price: 249, category: 'bottom', image: '/assets/outfits/work-commute-6-item3.svg' },
+  ],
+  'client-meeting-5': [
+    { name: '双面羊毛大衣', brand: 'The Row', price: 3299, category: 'outerwear', image: '/assets/outfits/client-meeting-5-item1.svg' },
+    { name: '高领针织衫', brand: 'Brunello Cucinelli', price: 1599, category: 'top', image: '/assets/outfits/client-meeting-5-item2.svg' },
+    { name: '西裤', brand: 'Prada', price: 1299, category: 'bottom', image: '/assets/outfits/client-meeting-5-item3.svg' },
+  ],
+  'weekend-date-6': [
+    { name: '波西米亚长裙', brand: 'Isabel Marant', price: 1299, category: 'dress', image: '/assets/outfits/weekend-date-6-item1.svg' },
+    { name: '麂皮短靴', brand: 'Chloé', price: 1599, category: 'shoes', image: '/assets/outfits/weekend-date-6-item2.svg' },
+    { name: '流苏斜挎包', brand: 'Chloé', price: 1899, category: 'accessory', image: '/assets/outfits/weekend-date-6-item3.svg' },
+  ],
 }
 
 export const seedOutfits: Outfit[] = [
@@ -215,5 +261,68 @@ export const seedOutfits: Outfit[] = [
     styleTags: ['温柔甜美', '潮流街头'],
     coverImage: outfitImages['girls-gathering-3-main'],
     brandSummary: 'Ganni + Dr. Martens',
+  },
+  {
+    id: 'work-commute-5', occasion: 'work-commute', name: '知性风衣通勤',
+    items: outfitItems['work-commute-5'], totalPrice: 2047, priceRange: 'premium',
+    styleTags: ['简约通勤', '优雅知性'],
+    coverImage: outfitImages['work-commute-5-main'],
+    brandSummary: 'Burberry + Everlane + JNBY',
+  },
+  {
+    id: 'work-commute-6', occasion: 'work-commute', name: '高级极简通勤',
+    items: outfitItems['work-commute-6'], totalPrice: 3047, priceRange: 'luxury',
+    styleTags: ['简约通勤', '职业精英'],
+    coverImage: outfitImages['work-commute-6-main'],
+    brandSummary: 'Max Mara + Theory + Uniqlo',
+  },
+  {
+    id: 'client-meeting-4', occasion: 'client-meeting', name: '格纹精英套装',
+    items: outfitItems['client-meeting-4'], totalPrice: 5297, priceRange: 'luxury',
+    styleTags: ['职业精英', '优雅知性'],
+    coverImage: outfitImages['client-meeting-4-main'],
+    brandSummary: 'Burberry + Totême + YSL',
+  },
+  {
+    id: 'client-meeting-5', occasion: 'client-meeting', name: '奢华商务会面',
+    items: outfitItems['client-meeting-5'], totalPrice: 6197, priceRange: 'luxury',
+    styleTags: ['职业精英', '优雅知性'],
+    coverImage: outfitImages['client-meeting-5-main'],
+    brandSummary: 'The Row + Brunello Cucinelli + Prada',
+  },
+  {
+    id: 'weekend-date-4', occasion: 'weekend-date', name: '春季约会针织',
+    items: outfitItems['weekend-date-4'], totalPrice: 3097, priceRange: 'luxury',
+    styleTags: ['温柔甜美', '优雅知性'],
+    coverImage: outfitImages['weekend-date-4-main'],
+    brandSummary: 'GANNI + Maje + Loewe',
+  },
+  {
+    id: 'weekend-date-5', occasion: 'weekend-date', name: '法式田园约会',
+    items: outfitItems['weekend-date-5'], totalPrice: 1677, priceRange: 'premium',
+    styleTags: ['优雅知性', '温柔甜美'],
+    coverImage: outfitImages['weekend-date-5-main'],
+    brandSummary: 'Rixo + Levi\'s + Castaner',
+  },
+  {
+    id: 'weekend-date-6', occasion: 'weekend-date', name: '波西米亚晚霞',
+    items: outfitItems['weekend-date-6'], totalPrice: 4797, priceRange: 'luxury',
+    styleTags: ['潮流街头', '优雅知性'],
+    coverImage: outfitImages['weekend-date-6-main'],
+    brandSummary: 'Isabel Marant + Chloé + Chloé',
+  },
+  {
+    id: 'girls-gathering-4', occasion: 'girls-gathering', name: '酷感闺蜜派对',
+    items: outfitItems['girls-gathering-4'], totalPrice: 2597, priceRange: 'luxury',
+    styleTags: ['潮流街头', '休闲舒适'],
+    coverImage: outfitImages['girls-gathering-4-main'],
+    brandSummary: 'Balenciaga + Urban Outfitters + COS',
+  },
+  {
+    id: 'girls-gathering-5', occasion: 'girls-gathering', name: '精致蕾丝晚宴',
+    items: outfitItems['girls-gathering-5'], totalPrice: 4397, priceRange: 'luxury',
+    styleTags: ['温柔甜美', '优雅知性'],
+    coverImage: outfitImages['girls-gathering-5-main'],
+    brandSummary: 'Self-Portrait + Jimmy Choo + Shrimps',
   },
 ]

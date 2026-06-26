@@ -107,7 +107,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
   const QUICK_REPLIES = ['上班通勤', '客户会议', '周末约会', '闺蜜聚会', '帮我推荐一套约会穿搭']
 
   return (
-    <div className="flex flex-col h-full min-h-0">
+    <div className="h-full grid grid-rows-[auto_1fr_auto] overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20 shrink-0 bg-white/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -124,7 +124,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto">
+      <div className="overflow-y-auto">
         {!collapsed && (
           <div className="px-4 py-3 space-y-3">
             {messages.map((m, i) => (

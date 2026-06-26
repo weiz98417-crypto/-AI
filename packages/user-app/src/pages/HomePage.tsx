@@ -57,8 +57,10 @@ export default function HomePage() {
       </section>
 
       {showAiChat && (
-        <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm" onClick={() => setShowAiChat(false)}>
-          <div className="w-full h-full sm:max-w-md sm:mx-auto sm:my-8 sm:rounded-3xl sm:h-[calc(100%-4rem)] bg-surface shadow-2xl border border-outline-variant/20 flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm sm:flex sm:items-center sm:justify-center" onClick={() => setShowAiChat(false)}>
+          <div className="fixed inset-x-0 bottom-0 top-0 sm:relative sm:max-w-md sm:rounded-3xl sm:inset-auto sm:w-full sm:mx-4 bg-surface shadow-2xl border border-outline-variant/20 grid grid-rows-[auto_1fr_auto]"
+            style={{ height: '-webkit-fill-available' }}
+            onClick={e => e.stopPropagation()}>
             <AiChat onClose={() => setShowAiChat(false)} />
           </div>
         </div>

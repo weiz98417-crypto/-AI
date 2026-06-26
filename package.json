@@ -6,5 +6,10 @@
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }

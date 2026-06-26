@@ -1,7 +1,7 @@
 {
   "buildCommand": "pnpm -F @ggai/user-app build && pnpm -F @ggai/admin-app build && mkdir -p packages/user-app/dist/admin && cp -r packages/admin-app/dist/* packages/user-app/dist/admin/",
   "outputDirectory": "packages/user-app/dist",
-  "installCommand": "pnpm install",
+  "installCommand": "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm install",
   "rewrites": [
     { "source": "/admin/(.*)", "destination": "/admin/index.html" },
     { "source": "/api/(.*)", "destination": "/api/$1" },

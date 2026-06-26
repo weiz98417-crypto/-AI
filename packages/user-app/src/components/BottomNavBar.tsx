@@ -1,9 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom'
+import { IconHome, IconBookmark, IconSettings } from './Icons'
 
 const TABS = [
-  { path: '/', label: '首页', icon: '🏠' },
-  { path: '/favorites', label: '收藏', icon: '❤️' },
-  { path: '/preferences', label: '偏好', icon: '👤' },
+  { path: '/', label: '首页', Icon: IconHome },
+  { path: '/favorites', label: '收藏', Icon: IconBookmark },
+  { path: '/preferences', label: '偏好', Icon: IconSettings },
 ]
 
 export default function BottomNavBar() {
@@ -22,7 +23,7 @@ export default function BottomNavBar() {
               isActive ? 'text-primary' : 'text-secondary'
             }`}
           >
-            <span className="text-2xl">{tab.icon}</span>
+            <tab.Icon size={22} filled={isActive} />
             <span className={`text-[11px] leading-none ${isActive ? 'font-bold' : 'font-semibold'}`}>
               {tab.label}
             </span>

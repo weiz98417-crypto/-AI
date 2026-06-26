@@ -4,6 +4,7 @@ import type { ChatMessage, RecommendationResult } from '../store/aiConversation'
 import { startSession, addUserMessage, generateFull } from '../store/aiConversation'
 import { useApp } from '../store/AppContext'
 import OutfitCardInline from './OutfitCardInline'
+import { IconRobot, IconSend } from './Icons'
 
 interface Props {
   embedded?: boolean
@@ -92,7 +93,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20 shrink-0 bg-white/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-lg">🤖</div>
+          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary"><IconRobot size={20} /></div>
           <div>
             <h2 className="text-base font-bold text-on-surface">逛逛AI 穿搭顾问</h2>
             <p className="text-[10px] text-outline">AI-powered style assistant</p>
@@ -206,8 +207,8 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
-              className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold disabled:opacity-40 active:scale-95 transition-all hover:shadow-md hover:shadow-primary/20"
-            >发送</button>
+              className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center disabled:opacity-40 active:scale-90 transition-all hover:shadow-md hover:shadow-primary/20 shrink-0"
+            ><IconSend size={16} /></button>
           </div>
         </div>
       )}

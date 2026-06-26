@@ -4,11 +4,14 @@ import { useApp } from '../store/AppContext'
 import { outfitImages } from '../assets/images'
 import SearchBar from '../components/SearchBar'
 import AiChat from '../components/AiChat'
+import StyleAssistant from '../components/StyleAssistant'
+import { IconRobot, IconSparkle } from '../components/Icons'
 
 export default function HomePage() {
   const navigate = useNavigate()
   const { state } = useApp()
   const [showAiChat, setShowAiChat] = useState(false)
+  const [showAssistant, setShowAssistant] = useState(false)
 
   return (
     <>
@@ -41,18 +44,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* AI Curated Picks — now a real chat prompt */}
+      {/* AI Curated For You */}
       <section className="px-3 mb-4">
         <div className="flex items-center gap-2 mb-3">
           <h2 className="text-[20px] font-bold text-on-surface">AI Curated For You</h2>
-          <span className="text-sm animate-sparkle inline-block">✨</span>
+          <IconSparkle size={18} className="text-primary" />
         </div>
         <button
           onClick={() => setShowAiChat(true)}
           className="w-full bg-gradient-to-r from-primary/5 via-primary-container/20 to-primary/5 border border-primary/20 rounded-2xl p-6 text-center hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 transition-all group animate-fade-in-up"
         >
-          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3 text-2xl group-hover:scale-110 transition-transform">
-            🤖
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform text-primary">
+            <IconRobot size={28} />
           </div>
           <h3 className="text-base font-bold text-on-surface mb-1">让AI帮你搭配今天的穿搭</h3>
           <p className="text-xs text-secondary">告诉我你的场合和偏好，我来为你量身推荐</p>
@@ -64,14 +67,14 @@ export default function HomePage() {
         </button>
       </section>
 
-      {/* Floating AI Button */}
-      {!showAiChat && (
+      {/* Floating Style Assistant Button */}
+      {!showAiChat && !showAssistant && (
         <button
-          onClick={() => setShowAiChat(true)}
-          className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-2xl bg-primary text-white shadow-lg shadow-primary/30 flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-all animate-float"
-          style={{ boxShadow: '0 4px 20px rgba(135, 76, 99, 0.3)' }}
+          onClick={() => setShowAssistant(true)}
+          className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-2xl bg-gradient-to-br from-tertiary to-tertiary-container text-white shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all animate-float"
+          style={{ boxShadow: '0 4px 20px rgba(66, 96, 133, 0.35)' }}
         >
-          ✨
+          <IconSparkle size={24} />
         </button>
       )}
 
@@ -79,11 +82,24 @@ export default function HomePage() {
       {showAiChat && (
         <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-end sm:items-center justify-center" onClick={() => setShowAiChat(false)}>
           <div
-            className="bg-surface w-full sm:max-w-md sm:rounded-3xl shadow-2xl border border-outline-variant/20 overflow-hidden"
-            style={{ height: '85vh', maxHeight: '700px' }}
+            className="bg-surface w-full sm:max-w-md sm:rounded-3xl shadow-2xl border border-outline-variant/20 overflow-hidden flex flex-col"
+            style={{ height: '100dvh', maxHeight: '100dvh' }}
             onClick={e => e.stopPropagation()}
           >
             <AiChat onClose={() => setShowAiChat(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* Style Assistant Modal */}
+      {showAssistant && (
+        <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-end sm:items-center justify-center" onClick={() => setShowAssistant(false)}>
+          <div
+            className="bg-surface w-full sm:max-w-md sm:rounded-3xl shadow-2xl border border-outline-variant/20 overflow-hidden flex flex-col"
+            style={{ height: '100dvh', maxHeight: '100dvh' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <StyleAssistant onClose={() => setShowAssistant(false)} />
           </div>
         </div>
       )}

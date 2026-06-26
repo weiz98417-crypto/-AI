@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Sparkles, Send } from './Icons'
+import { Sparkle, PaperPlaneTilt } from './Icons'
 
 interface Props { onClose: () => void }
 
@@ -89,7 +89,7 @@ export default function StyleAssistant({ onClose }: Props) {
         />
         <button onClick={handleSend} disabled={!input.trim() || loading}
           className="w-10 h-10 bg-tertiary text-white rounded-xl flex items-center justify-center disabled:opacity-40 active:scale-90 shrink-0">
-          <Send size={16} />
+          <PaperPlaneTilt size={16} weight="fill" />
         </button>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { useApp } from '../store/AppContext'
 import { outfitImages } from '../assets/images'
 import SearchBar from '../components/SearchBar'
 import AiChat from '../components/AiChat'
-import { Bot, Sparkles } from '../components/Icons'
+import { Robot, Sparkle } from '../components/Icons'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -40,11 +40,11 @@ export default function HomePage() {
       <section className="px-3 mb-4">
         <div className="flex items-center gap-2 mb-3">
           <h2 className="text-[20px] font-bold text-on-surface">AI Curated For You</h2>
-          <Sparkles size={18} className="text-primary" />
+          <Sparkle size={18} weight="fill" className="text-primary" />
         </div>
         <button onClick={() => setShowAiChat(true)} className="w-full bg-gradient-to-r from-primary/5 via-primary-container/20 to-primary/5 border border-primary/20 rounded-2xl p-6 text-center hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 transition-all group animate-fade-in-up">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform text-primary">
-            <Bot size={28} />
+            <Robot size={28} weight="fill" />
           </div>
           <h3 className="text-base font-bold text-on-surface mb-1">让AI帮你搭配今天的穿搭</h3>
           <p className="text-xs text-secondary">告诉我你的场合和偏好，我来为你量身推荐</p>

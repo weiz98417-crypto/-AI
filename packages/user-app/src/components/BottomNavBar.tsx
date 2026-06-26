@@ -1,10 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { House, BookmarkSimple, GearSix } from './Icons'
+import { IconHome, IconBookmark, IconSettings } from './Icons'
 
 const TABS = [
-  { path: '/', label: '首页', Icon: House },
-  { path: '/favorites', label: '收藏', Icon: BookmarkSimple },
-  { path: '/preferences', label: '偏好', Icon: GearSix },
+  { path: '/', label: '首页', Icon: IconHome },
+  { path: '/favorites', label: '收藏', Icon: IconBookmark },
+  { path: '/preferences', label: '偏好', Icon: IconSettings },
 ]
 
 export default function BottomNavBar() {
@@ -18,7 +18,7 @@ export default function BottomNavBar() {
         return (
           <button key={tab.path} onClick={() => navigate(tab.path)}
             className={`flex flex-col items-center justify-center gap-0.5 active:scale-95 transition-all min-w-[64px] py-1 ${isActive ? 'text-primary' : 'text-outline-variant'}`}>
-            <tab.Icon size={22} weight={isActive ? 'fill' : 'regular'} />
+            <tab.Icon size={22} className={isActive ? '' : 'opacity-60'} />
             <span className={`text-[11px] leading-none ${isActive ? 'font-bold' : 'font-semibold'}`}>{tab.label}</span>
           </button>
         )

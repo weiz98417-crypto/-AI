@@ -5,7 +5,7 @@ import type { Outfit } from '@ggai/shared/types'
 import { useApp } from '../store/AppContext'
 import { calculateAiScore } from '../store/aiEngine'
 import AiChat from '../components/AiChat'
-import { HeartStraight, Sparkle } from '../components/Icons'
+import { IconHeart, IconHeartFilled, IconSparkles } from '../components/Icons'
 
 export default function RecommendPage() {
   const { occasion } = useParams<{ occasion: string }>()
@@ -83,7 +83,7 @@ export default function RecommendPage() {
               onClick={() => setShowAiChat(true)}
               className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-light text-white shadow-md active:scale-[0.98] btn-shimmer transition-all"
             >
-              <Sparkle size={18} weight="fill" />
+              <IconSparkles size={18} />
               Ask AI for Advice
             </button>
           ) : (
@@ -113,7 +113,7 @@ export default function RecommendPage() {
                       onClick={(e) => { e.stopPropagation(); dispatch({ type: 'TOGGLE_FAVORITE', outfitId: outfit.id }) }}
                       className={`absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-sm active:scale-95 transition-transform ${isFav ? 'text-primary' : 'text-secondary'}`}
                     >
-                      <HeartStraight size={18} weight={isFav ? 'fill' : 'regular'} className={isFav ? 'text-red-400' : 'text-white/70'} />
+                      {isFav ? <IconHeartFilled size={18} className="text-red-400" /> : <IconHeart size={18} className="text-white/70" />}
                     </button>
                     <span className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
                       {PRICE_RANGE_MAP[outfit.priceRange]?.label}

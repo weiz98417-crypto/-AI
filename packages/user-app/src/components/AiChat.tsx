@@ -5,7 +5,7 @@ import type { Outfit } from '@ggai/shared/types'
 import type { ChatMessage, RecommendationResult } from '../store/aiConversation'
 import { useApp } from '../store/AppContext'
 import OutfitCardInline from './OutfitCardInline'
-import { Robot, PaperPlaneTilt, Camera } from '@phosphor-icons/react'
+import { IconRobot, IconSend2, IconCamera, IconX } from './Icons'
 import { calculateAiScore } from '../store/aiEngine'
 import { getAiOutfitStory } from '../store/deepseek'
 
@@ -111,7 +111,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
       <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20 shrink-0 bg-white/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-            <Robot size={20} weight="fill" />
+            <IconRobot size={20} />
           </div>
           <div>
             <h2 className="text-base font-bold text-on-surface">逛逛AI 穿搭顾问</h2>
@@ -190,7 +190,7 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
           <div className="flex gap-2">
             <button onClick={() => setShowCamera(true)} disabled={loading}
               className="w-10 h-10 rounded-xl bg-surface-container-low border border-outline-variant/30 text-secondary flex items-center justify-center shrink-0 hover:border-primary hover:text-primary transition-colors active:scale-90">
-              <Camera size={18} />
+              <IconCamera size={18} />
             </button>
             <input ref={inputRef} value={input} onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSend()}
@@ -199,13 +199,13 @@ export default function AiChat({ embedded = false, occasion, onClose }: Props) {
               disabled={loading} />
             <button onClick={handleSend} disabled={!input.trim() || loading}
               className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center disabled:opacity-40 active:scale-90 transition-all hover:shadow-md hover:shadow-primary/20 shrink-0">
-              <PaperPlaneTilt size={16} weight="fill" />
+              <IconSend2 size={16} />
             </button>
           </div>
           {showCamera && (
             <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowCamera(false)}>
               <div className="bg-surface rounded-2xl p-6 shadow-2xl border border-outline-variant/20 mx-8 text-center" onClick={e => e.stopPropagation()}>
-                <Camera size={40} className="text-primary mx-auto mb-3" />
+                <IconCamera size={40} className="text-primary mx-auto mb-3" />
                 <h3 className="text-base font-bold mb-1">需要相机权限</h3>
                 <p className="text-xs text-secondary mb-4">逛逛AI 需要访问你的相机来识别穿搭风格</p>
                 <div className="flex gap-3">

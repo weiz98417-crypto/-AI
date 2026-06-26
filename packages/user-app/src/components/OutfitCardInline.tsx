@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Outfit } from '@ggai/shared/types'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../store/AppContext'
-import { HeartStraight, ShirtFolded } from './Icons'
+import { IconHeart, IconHeartFilled, IconShirt } from './Icons'
 
 interface Props {
   outfit: Outfit
@@ -31,7 +31,7 @@ export default function OutfitCardInline({ outfit, story }: Props) {
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary-container/30 to-surface-container flex items-center justify-center text-primary/40"><ShirtFolded size={28} /></div>
+            <div className="w-full h-full bg-gradient-to-br from-primary-container/30 to-surface-container flex items-center justify-center text-primary/40"><IconShirt size={28} /></div>
           )}
         </div>
 
@@ -40,7 +40,7 @@ export default function OutfitCardInline({ outfit, story }: Props) {
           <div className="flex justify-between items-start">
             <h4 className="text-sm font-bold text-on-surface truncate">{outfit.name}</h4>
             <button onClick={toggleFav} className={`text-lg shrink-0 ml-2 transition-all active:scale-125 ${isFav ? 'scale-110' : ''}`}>
-              <HeartStraight size={18} weight={isFav ? 'fill' : 'regular'} className={isFav ? 'text-red-400' : 'text-outline-variant'} />
+              {isFav ? <IconHeartFilled size={18} className="text-red-400" /> : <IconHeart size={18} className="text-outline-variant" />}
             </button>
           </div>
 

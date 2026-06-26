@@ -1,5 +1,5 @@
 export {
-  Robot, Sparkle, Heart, Camera, PaperPlaneTilt, MagnifyingGlass,
-  House, BookmarkSimple, GearSix, Handshake, Briefcase, ShirtFolded,
-  HeartStraight, X, CaretLeft, CaretRight, Bell,
-} from '@phosphor-icons/react'
+  IconRobot, IconSparkles, IconHeart, IconHeartFilled, IconCamera, IconSend2,
+  IconSearch, IconHome, IconBookmark, IconSettings,
+  IconBriefcase, IconShirt, IconConfetti, IconX,
+} from '@tabler/icons-react'

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../store/AppContext'
-import { MagnifyingGlass } from './Icons'
+import { IconSearch } from './Icons'
 
 export default function SearchBar() {
   const { state } = useApp()
@@ -35,7 +35,7 @@ export default function SearchBar() {
 
   return (
     <div className="relative flex items-center" ref={ref}>
-      <span className="absolute left-4 text-on-surface-variant"><MagnifyingGlass size={16} /></span>
+      <span className="absolute left-4 text-on-surface-variant"><IconSearch size={16} /></span>
       <input
         className="w-full h-12 pl-12 pr-4 bg-surface-container-lowest border border-outline-variant rounded-xl focus:outline-none focus:border-primary text-sm text-on-surface-variant"
         placeholder="Find your style for today..."

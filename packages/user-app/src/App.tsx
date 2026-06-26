@@ -34,8 +34,7 @@ export default function App() {
 
       {showAssistant && (
         <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-end sm:items-center justify-center" onClick={() => setShowAssistant(false)}>
-          <div className="bg-surface w-full sm:max-w-md sm:rounded-3xl shadow-2xl border border-outline-variant/20 overflow-hidden flex flex-col"
-            style={{ height: '100dvh', maxHeight: '100dvh' }}
+          <div className="absolute inset-0 sm:relative sm:max-w-md sm:rounded-3xl sm:h-auto bg-surface shadow-2xl border border-outline-variant/20 overflow-hidden flex flex-col"
             onClick={e => e.stopPropagation()}>
             <StyleAssistant onClose={() => setShowAssistant(false)} />
           </div>

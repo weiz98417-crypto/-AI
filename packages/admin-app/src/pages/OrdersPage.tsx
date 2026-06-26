@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { AdminOrder } from '../shared/types'
-import { seedOrders } from '../store/seedData'
+import { seedOrders, generateBulkOrders } from '../store/seedData'
 
 const STATUS_LABELS: Record<string, string> = {
   pending: '待处理', shipped: '已发货', delivered: '已完成', cancelled: '已取消',
@@ -15,7 +15,8 @@ const STATUS_COLORS: Record<string, string> = {
 export default function OrdersPage() {
   const [orders] = useState<AdminOrder[]>(() => {
     const saved = localStorage.getItem('ggai-admin-orders')
-    return saved ? JSON.parse(saved) : seedOrders
+    if (saved) return JSON.parse(saved)
+    return [...seedOrders, ...generateBulkOrders(1000)]
   })
   const [statusFilter, setStatusFilter] = useState('all')
   const [search, setSearch] = useState('')

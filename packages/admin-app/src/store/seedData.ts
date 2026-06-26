@@ -1,14 +1,14 @@
 import type { DashboardMetrics, ManagedOutfit } from '../shared/types'
 
 export const seedMetrics: DashboardMetrics = {
-  todayRevenue: 12580,
-  activeUsers: 342,
-  orderCount: 89,
-  favoriteCount: 156,
+  todayRevenue: 125800,
+  activeUsers: 3420,
+  orderCount: 1289,
+  favoriteCount: 8156,
   topOccasions: [
-    { name: '上班通勤', count: 42 },
-    { name: '周末约会', count: 31 },
-    { name: '闺蜜聚会', count: 18 },
+    { name: '上班通勤', count: 42156 },
+    { name: '周末约会', count: 31890 },
+    { name: '闺蜜聚会', count: 18234 },
   ],
 }
 
@@ -235,4 +235,78 @@ export const OUTFIT_IMAGE_POOL: Record<string, string[]> = {
     '/assets/outfits/girls-gathering-4-main.jpg',
     '/assets/outfits/girls-gathering-5-main.jpg',
   ],
+}
+
+// ---- Bulk data generators (1000+ records) ----
+
+const FIRST_NAMES = ['Sophie','Marco','Julia','Leo','Emma','Lily','Tom','Anna','David','Grace','Mike','Cathy','Ryan','Vivian','Jack','Iris','Olivia','Ethan','Mia','Noah','Ava','Liam','Isabella','Lucas','Zoe','Elijah','Harper','James','Ella','Logan','Scarlett','Mason','Chloe','Ben','Luna','Henry','Riley','Alex','Nora','Seb','Maya','Dan','Aria','Chris','Emily','Nick','Eva','Owen','Aiden']
+const LAST_NAMES = ['Chen','Rossi','Zhang','Kim','Wang','Huang','Li','Wu','Zhou','Yang','Sun','Deng','He','Feng','Tao','Liu','Xu','Shen','Cao','Ma','Lin','Guo','Xie','Peng','Jin','Ren','Su','Fang','Jiang','Tan','Wen','Dai','Shi','Du','Pan','Yuan','Cheng','Bao','Song','Xiang','Tang','Zeng','Lei','Bai','Wei','Long','Shao','Hong']
+
+const ACTIONS = [
+  'Saved {outfit} outfit','Purchased {outfit}','Shared {outfit} via WeChat',
+  'Viewed {outfit} detail','Favorited {outfit}','Added {outfit} to cart',
+  'Applied promo code GGAI20','Updated profile photo','Completed style survey',
+  'Left a 5-star review','Referred a friend','Updated shipping address',
+  'Browsed {occasion} outfits','Registered new account','Reset password',
+  'Uploaded outfit photo','Left a comment on {outfit}','Unfavorited {outfit}',
+]
+
+const OUTFIT_NAMES = ['知性通勤套装','优雅西装look','清爽衬衫裙','轻松休闲办公','知性风衣通勤','高级极简通勤','气场西装套装','高级感连衣裙','干练知性风','格纹精英套装','奢华商务会面','碎花浪漫约会','法式少女风','甜酷休闲约会','春季约会针织','法式田园约会','波西米亚晚霞','派对亮片裙','街头酷女孩','甜酷缎面look','酷感闺蜜派对','精致蕾丝晚宴']
+const OCCASIONS = ['work-commute','client-meeting','weekend-date','girls-gathering']
+const ORDER_STATUSES: AdminOrder['status'][] = ['pending','shipped','delivered','cancelled']
+
+function rand(min: number, max: number) { return Math.floor(Math.random() * (max - min + 1)) + min }
+function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)] }
+function genDate(daysBack: number) {
+  const d = new Date(); d.setDate(d.getDate() - daysBack)
+  return d.toISOString().slice(0, 10)
+}
+function genTime() {
+  const units = ['m ago','h ago','h ago','h ago','h ago','1d ago','1d ago','2d ago','3d ago','1w ago']
+  return pick(units).replace('m', String(rand(1, 59))).replace('h', String(rand(1, 23)))
+}
+
+export function generateBulkUsers(count: number): import('../shared/types').AdminUser[] {
+  const users: import('../shared/types').AdminUser[] = []
+  for (let i = 0; i < count; i++) {
+    const fn = pick(FIRST_NAMES); const ln = pick(LAST_NAMES)
+    users.push({
+      id: `u${i + 100}`,
+      name: `${fn} ${ln}`,
+      avatar: (fn[0] + ln[0]).toUpperCase(),
+      email: `${fn.toLowerCase()}.${ln.toLowerCase()}${rand(1,999)}@example.com`,
+      joinDate: genDate(rand(5, 365)),
+      orderCount: rand(0, 25),
+      totalSpent: rand(0, 15000),
+      status: Math.random() > 0.05 ? 'active' : 'banned',
+    })
+  }
+  return users
+}
+
+export function generateBulkOrders(count: number): import('../shared/types').AdminOrder[] {
+  const orders: import('../shared/types').AdminOrder[] = []
+  for (let i = 0; i < count; i++) {
+    const fn = pick(FIRST_NAMES); const ln = pick(LAST_NAMES)
+    orders.push({
+      id: `ord${i + 100}`,
+      userId: `u${rand(0, 1499)}`,
+      userName: `${fn} ${ln}`,
+      items: pick(OUTFIT_NAMES),
+      amount: rand(299, 6197),
+      status: pick(ORDER_STATUSES),
+      date: genDate(rand(1, 90)),
+    })
+  }
+  return orders.sort((a, b) => b.date.localeCompare(a.date))
+}
+
+export function generateBulkActivities(count: number) {
+  const acts: { name: string; action: string; time: string }[] = []
+  for (let i = 0; i < count; i++) {
+    const fn = pick(FIRST_NAMES); const ln = pick(LAST_NAMES)
+    const action = pick(ACTIONS).replace('{outfit}', pick(OUTFIT_NAMES)).replace('{occasion}', pick(OCCASIONS))
+    acts.push({ name: `${fn} ${ln}`, action, time: genTime() })
+  }
+  return acts
 }

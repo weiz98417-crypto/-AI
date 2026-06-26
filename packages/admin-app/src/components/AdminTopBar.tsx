@@ -7,11 +7,14 @@ export default function AdminTopBar() {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
+  const [notifOpen, setNotifOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const notifRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false)
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
@@ -119,8 +122,43 @@ export default function AdminTopBar() {
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <div className="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center cursor-pointer transition-all bell hover:shadow-sm">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a2.5 2.5 0 0 0-1 4.8V9l-2 3h6l-2-3V6.8A2.5 2.5 0 0 0 8 2z" stroke="#615d5f" strokeWidth="1.2" strokeLinecap="round"/><circle cx="12" cy="4" r="2.5" fill="#ba1a1a" stroke="white" strokeWidth="0.5"/></svg>
+        <div ref={notifRef} className="relative">
+          <button
+            onClick={() => setNotifOpen(!notifOpen)}
+            className="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center cursor-pointer transition-all hover:shadow-sm relative"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a2.5 2.5 0 0 0-1 4.8V9l-2 3h6l-2-3V6.8A2.5 2.5 0 0 0 8 2z" stroke="#615d5f" strokeWidth="1.2" strokeLinecap="round"/><circle cx="12" cy="4" r="2.5" fill="#ba1a1a" stroke="white" strokeWidth="0.5"/></svg>
+          </button>
+
+          {notifOpen && (
+            <div className="absolute right-0 top-full mt-2 w-80 bg-surface rounded-2xl border border-outline-variant/20 shadow-2xl overflow-hidden z-50">
+              <div className="px-4 py-3 border-b border-outline-variant/10 flex justify-between items-center">
+                <h3 className="text-sm font-bold">消息通知</h3>
+                <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">3 条未读</span>
+              </div>
+              <div className="max-h-72 overflow-y-auto">
+                {[
+                  { title: '新用户激增', body: '今日新增 128 位注册用户，较昨日增长 42%', time: '5分钟前', dot: true },
+                  { title: '库存预警', body: '「知性通勤套装」即将售罄，建议补充库存', time: '1小时前', dot: true },
+                  { title: '系统通知', body: 'DeepSeek API 调用量已达本月配额的 80%', time: '3小时前', dot: true },
+                  { title: '订单完成', body: '用户 Sophie Chen 已完成一笔 ¥2,198 的订单', time: '昨天', dot: false },
+                  { title: '数据报告', body: '本周用户活跃度报告已生成，点击查看详情', time: '昨天', dot: false },
+                ].map((n, i) => (
+                  <div key={i} className="px-4 py-3 hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/5">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      {n.dot && <span className="w-2 h-2 rounded-full bg-primary shrink-0" />}
+                      <span className="text-sm font-semibold">{n.title}</span>
+                    </div>
+                    <p className="text-xs text-secondary ml-4">{n.body}</p>
+                    <span className="text-[10px] text-outline ml-4 mt-1 inline-block">{n.time}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="px-4 py-2.5 border-t border-outline-variant/10 text-center">
+                <button className="text-xs text-primary font-semibold hover:underline">查看全部通知</button>
+              </div>
+            </div>
+          )}
         </div>
         <div className="w-px h-6 bg-outline-variant/30 mx-1" />
         <div className="flex items-center gap-3">

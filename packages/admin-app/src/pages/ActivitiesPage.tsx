@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { seedAllActivities } from '../store/seedData'
+import { seedAllActivities, generateBulkActivities, seedActivities } from '../store/seedData'
 
 const TYPE_LABELS: Record<string, string> = {
   purchase: '购买', save: '收藏', share: '分享', view: '浏览',
@@ -7,7 +7,7 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 export default function ActivitiesPage() {
-  const [activities] = useState(seedAllActivities)
+  const [activities] = useState(() => [...seedAllActivities, ...generateBulkActivities(2000)])
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const perPage = 12

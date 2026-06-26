@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import type { AdminUser } from '../shared/types'
-import { seedUsers } from '../store/seedData'
+import { seedUsers, generateBulkUsers } from '../store/seedData'
 
 export default function UsersPage() {
   const [users] = useState<AdminUser[]>(() => {
     const saved = localStorage.getItem('ggai-admin-users')
-    return saved ? JSON.parse(saved) : seedUsers
+    if (saved) return JSON.parse(saved)
+    return [...seedUsers, ...generateBulkUsers(1500)]
   })
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')

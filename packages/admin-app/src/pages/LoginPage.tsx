@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAdmin } from '../store/AdminContext'
+import { Sparkles } from 'lucide-react'
 
 export default function LoginPage() {
   const { state, dispatch } = useAdmin()
@@ -15,8 +16,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-surface-container-low">
       <div className="w-full max-w-sm bg-surface rounded-2xl shadow-lg p-8 animate-float animate-fade-in-up">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-light mx-auto mb-4 flex items-center justify-center shadow-lg shadow-primary/20">
-            <span className="text-white text-2xl font-extrabold">逛</span>
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-container mx-auto mb-4 flex items-center justify-center shadow-lg shadow-primary/20">
+            <Sparkles size={28} className="text-white" />
           </div>
           <h1 className="text-2xl font-extrabold">
             <span className="gradient-text">逛逛AI</span>

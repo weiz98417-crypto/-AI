@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { seedAllActivities, generateBulkActivities, seedActivities } from '../store/seedData'
+import { seedAllActivities, generateBulkActivities } from '../store/seedData'
+import Pagination from '../components/Pagination'
 
 const TYPE_LABELS: Record<string, string> = {
   purchase: '购买', save: '收藏', share: '分享', view: '浏览',
@@ -52,15 +53,8 @@ export default function ActivitiesPage() {
             </div>
           ))}
         </div>
-        <div className="px-6 py-4 border-t border-outline-variant/10 flex items-center justify-between bg-surface-container-low">
-          <p className="text-xs text-secondary font-semibold">共 {total} 条活动</p>
-          <div className="flex items-center gap-1.5">
-            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="p-1.5 text-secondary hover:bg-primary/10 rounded-lg disabled:opacity-30 text-sm">◀</button>
-            {Array.from({ length: Math.min(pages, 5) }, (_, i) => i + 1).map(p => (
-              <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-semibold ${p === page ? 'bg-primary text-white shadow-sm' : 'text-secondary hover:bg-primary/10'}`}>{p}</button>
-            ))}
-            <button onClick={() => setPage(Math.min(pages, page + 1))} disabled={page === pages} className="p-1.5 text-secondary hover:bg-primary/10 rounded-lg disabled:opacity-30 text-sm">▶</button>
-          </div>
+        <div className="px-6 py-4 border-t border-outline-variant/10 bg-surface-container-low">
+          <Pagination page={page} total={total} perPage={perPage} onChange={setPage} />
         </div>
       </div>
     </div>

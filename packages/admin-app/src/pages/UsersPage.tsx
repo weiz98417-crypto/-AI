@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { AdminUser } from '../shared/types'
 import { seedUsers, generateBulkUsers } from '../store/seedData'
+import Pagination from '../components/Pagination'
 
 export default function UsersPage() {
   const [users] = useState<AdminUser[]>(() => {
@@ -119,15 +120,8 @@ export default function UsersPage() {
             </tbody>
           </table>
         </div>
-        <div className="px-6 py-4 border-t border-outline-variant/10 flex items-center justify-between bg-surface-container-low">
-          <p className="text-xs text-secondary font-semibold">第 {(page - 1) * perPage + 1}-{Math.min(page * perPage, total)} 条，共 {total} 条</p>
-          <div className="flex items-center gap-1.5">
-            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="p-1.5 text-secondary hover:bg-primary/10 rounded-lg disabled:opacity-30 text-sm">◀</button>
-            {Array.from({ length: pages }, (_, i) => i + 1).map(p => (
-              <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-semibold ${p === page ? 'bg-primary text-white shadow-sm' : 'text-secondary hover:bg-primary/10'}`}>{p}</button>
-            ))}
-            <button onClick={() => setPage(Math.min(pages, page + 1))} disabled={page === pages} className="p-1.5 text-secondary hover:bg-primary/10 rounded-lg disabled:opacity-30 text-sm">▶</button>
-          </div>
+        <div className="px-6 py-4 border-t border-outline-variant/10 bg-surface-container-low">
+          <Pagination page={page} total={total} perPage={perPage} onChange={setPage} />
         </div>
       </div>
     </div>

@@ -138,13 +138,16 @@ export default function AdminTopBar() {
               </div>
               <div className="max-h-72 overflow-y-auto">
                 {[
-                  { title: '新用户激增', body: '今日新增 128 位注册用户，较昨日增长 42%', time: '5分钟前', dot: true },
-                  { title: '库存预警', body: '「知性通勤套装」即将售罄，建议补充库存', time: '1小时前', dot: true },
-                  { title: '系统通知', body: 'DeepSeek API 调用量已达本月配额的 80%', time: '3小时前', dot: true },
-                  { title: '订单完成', body: '用户 Sophie Chen 已完成一笔 ¥2,198 的订单', time: '昨天', dot: false },
-                  { title: '数据报告', body: '本周用户活跃度报告已生成，点击查看详情', time: '昨天', dot: false },
+                  { title: '新用户激增', body: '今日新增 128 位注册用户，较昨日增长 42%', time: '5分钟前', dot: true, nav: '/users' },
+                  { title: '库存预警', body: '「知性通勤套装」即将售罄，建议补充库存', time: '1小时前', dot: true, nav: '/outfits' },
+                  { title: '系统通知', body: 'DeepSeek API 调用量已达本月配额的 80%', time: '3小时前', dot: true, nav: '/settings' },
+                  { title: '订单完成', body: '用户 Sophie Chen 已完成一笔 ¥2,198 的订单', time: '昨天', dot: false, nav: '/orders' },
+                  { title: '数据报告', body: '本周用户活跃度报告已生成', time: '昨天', dot: false, nav: '/' },
+                  { title: '退款申请', body: '用户 Tom Huang 申请退款「轻松休闲办公」', time: '2天前', dot: false, nav: '/orders' },
+                  { title: '内容审核', body: '3 套新穿搭已通过自动审核，已上架', time: '2天前', dot: false, nav: '/outfits' },
+                  { title: '活动提醒', body: '本月用户分享率提升 15%，推荐优化分享功能', time: '3天前', dot: false, nav: '/activities' },
                 ].map((n, i) => (
-                  <div key={i} className="px-4 py-3 hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/5">
+                  <div key={i} onClick={() => { navigate(n.nav || '/'); setNotifOpen(false) }} className="px-4 py-3 hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/5">
                     <div className="flex items-center gap-2 mb-0.5">
                       {n.dot && <span className="w-2 h-2 rounded-full bg-primary shrink-0" />}
                       <span className="text-sm font-semibold">{n.title}</span>

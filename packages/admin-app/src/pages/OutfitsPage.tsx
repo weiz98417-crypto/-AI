@@ -3,6 +3,7 @@ import { useAdmin } from '../store/AdminContext'
 import { OUTFIT_IMAGE_POOL as IMG_POOL } from '../store/seedData'
 import type { ManagedOutfit } from '../shared/types'
 import ImageUploader from '../components/ImageUploader'
+import Pagination from '../components/Pagination'
 
 const OCCASION_COLORS: Record<string, string> = {
   'work-commute': 'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant',
@@ -393,31 +394,8 @@ export default function OutfitsPage() {
         </div>
 
         {/* Pagination */}
-        <div className="px-6 py-4 border-t border-outline-variant/10 flex items-center justify-between bg-surface-container-low">
-          <p className="text-xs text-secondary font-semibold">
-            第 {(page - 1) * perPage + 1}-{Math.min(page * perPage, total)} 条，共 {total} 条
-          </p>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => setPage(Math.max(1, page - 1))}
-              disabled={page === 1}
-              className="p-1.5 text-secondary hover:bg-primary/10 hover:text-primary rounded-lg disabled:opacity-30 text-sm transition-all"
-            >◀</button>
-            {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-semibold ${
-                  p === page ? 'bg-primary text-white shadow-sm' : 'text-secondary hover:bg-primary/10 hover:text-primary transition-all'
-                }`}
-              >{p}</button>
-            ))}
-            <button
-              onClick={() => setPage(Math.min(pages, page + 1))}
-              disabled={page === pages}
-              className="p-1.5 text-secondary hover:bg-primary/10 hover:text-primary rounded-lg disabled:opacity-30 text-sm transition-all"
-            >▶</button>
-          </div>
+        <div className="px-6 py-4 border-t border-outline-variant/10 bg-surface-container-low">
+          <Pagination page={page} total={total} perPage={perPage} onChange={setPage} />
         </div>
       </div>
 
